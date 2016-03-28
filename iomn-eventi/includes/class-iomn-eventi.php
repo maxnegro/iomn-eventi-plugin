@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       http://photomarketing.it
  * @since      1.0.0
  *
  * @package    Iomn_Eventi
@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    Iomn_Eventi
  * @subpackage Iomn_Eventi/includes
- * @author     Your Name <email@example.com>
+ * @author     Massimiliano Masserelli <info@photomarketing.it>
  */
 class Iomn_Eventi {
 
@@ -73,6 +73,7 @@ class Iomn_Eventi {
 
 		$this->load_dependencies();
 		$this->set_locale();
+		$this->define_post_hooks();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
@@ -124,6 +125,69 @@ class Iomn_Eventi {
 	}
 
 	/**
+	 * Register custom post type.
+	 *
+	 * Registers custom post type used for storing events. Registers also a
+	 * taxonomy used for storing event locations.
+	 *
+	 * @since    1.0.0
+	 */
+	public function register_post_type() {
+			$labels = array(
+					'name' => _x('Eventi', 'Post Type General Name', 'iomn_text_domain'),
+					'singular_name' => _x('Evento', 'Post Type Singular Name', 'iomn_text_domain'),
+					'menu_name' => __('Eventi IOMN', 'iomn_text_domain'),
+					'name_admin_bar' => __('Eventi IOMN', 'iomn_text_domain'),
+					'parent_item_colon' => __('Parent Item:', 'iomn_text_domain'),
+					'all_items' => __('Tutti gli Eventi', 'iomn_text_domain'),
+					'add_new_item' => __('Nuovo Evento', 'iomn_text_domain'),
+					'add_new' => __('Nuovo', 'iomn_text_domain'),
+					'new_item' => __('Nuovo Evento', 'iomn_text_domain'),
+					'edit_item' => __('Modifica Evento', 'iomn_text_domain'),
+					'update_item' => __('Aggiorna Evento', 'iomn_text_domain'),
+					'view_item' => __('Visualizza Evento', 'iomn_text_domain'),
+					'search_items' => __('Cerca Evento', 'iomn_text_domain'),
+					'not_found' => __('Nessun elemento trovato', 'iomn_text_domain'),
+					'not_found_in_trash' => __('Nessun elemento trovato nel Cestino', 'iomn_text_domain'),
+			);
+			$args = array(
+					'label' => __('Evento', 'iomn_text_domain'),
+					'description' => __('IOMN Event Type', 'iomn_text_domain'),
+					'labels' => $labels,
+					'supports' => array('title', 'editor'),
+					// 'supports'            => array( 'title', 'editor', 'custom-fields', ),
+					'taxonomies' => array('iomn_strutture'),
+					// 'taxonomies'          => array( 'category', 'post_tag' ),
+					'hierarchical' => false,
+					'public' => true,
+					'show_ui' => true,
+					'show_in_menu' => true,
+					'menu_position' => 5,
+					'menu_icon' => 'dashicons-calendar',
+					'show_in_admin_bar' => true,
+					'show_in_nav_menus' => false,
+					'can_export' => true,
+					'has_archive' => 'eventi',
+					'exclude_from_search' => false,
+					'publicly_queryable' => true,
+					'capability_type' => 'post',
+			);
+
+			register_post_type('iomn_eventi', $args);
+			register_taxonomy('iomn_strutture', 'iomn_eventi', array(
+					'label' => __('Ospedali'),
+					'rewrite' => array('slug' => 'ospedali'),
+					'hierarchical' => true,
+					'meta_box_cb' => false,
+	//        'capabilities' => array(
+	//            'assign_terms' => 'edit_guides',
+	//            'edit_terms' => 'publish_guides'
+	//        ),
+			));
+
+		}
+
+	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
 	 * Uses the Iomn_Eventi_i18n class in order to set the domain and to register the hook
@@ -140,6 +204,10 @@ class Iomn_Eventi {
 
 	}
 
+	private function define_post_hooks() {
+		$this->loader->add_action( 'init', $this, 'register_post_type' );
+	}
+
 	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
@@ -153,6 +221,7 @@ class Iomn_Eventi {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'add_meta_box' );
 
 	}
 

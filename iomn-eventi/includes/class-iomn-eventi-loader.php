@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       http://example.com
+ * @link       http://photomarketing.it
  * @since      1.0.0
  *
  * @package    Iomn_Eventi
@@ -19,7 +19,7 @@
  *
  * @package    Iomn_Eventi
  * @subpackage Iomn_Eventi/includes
- * @author     Your Name <email@example.com>
+ * @author     Massimiliano Masserelli <info@photomarketing.it>
  */
 class Iomn_Eventi_Loader {
 
