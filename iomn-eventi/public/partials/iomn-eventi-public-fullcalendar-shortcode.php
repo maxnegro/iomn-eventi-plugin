@@ -47,7 +47,7 @@
             },
             eventSources: [
                 {
-                    url: '<?php get_feed_link('iomn-eventi-json'); ?>',
+                    url: '<?php echo get_feed_link('iomn-eventi-json'); ?>',
                     error: function() {
                         alert('there was an error while fetching events!');
                     },
