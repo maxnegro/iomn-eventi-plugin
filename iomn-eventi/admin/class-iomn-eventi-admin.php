@@ -111,7 +111,7 @@ class Iomn_Eventi_Admin
 		*/
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__).'js/iomn-eventi-admin.js', array('jquery'), $this->version, false);
-		wp_enqueue_script('jquery-ui-datepicker');
+		// wp_enqueue_script('jquery-ui-datepicker');
 		wp_enqueue_script('jquery-ui-spinner');
 		wp_enqueue_script('jquery-ui-timepicker', plugin_dir_url(__FILE__).'js/jquery.ui.timepicker.js', array('jquery-ui-core'), $this->version, false);
 		wp_enqueue_script('jquery-ui-datepicker');
