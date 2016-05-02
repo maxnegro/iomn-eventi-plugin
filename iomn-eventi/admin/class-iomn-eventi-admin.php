@@ -47,6 +47,9 @@ class Iomn_Eventi_Admin
 	{
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+
+		$this->load_dependencies(	$this->plugin_name, $this->version );
+
 	}
 
 	/**
@@ -57,7 +60,7 @@ class Iomn_Eventi_Admin
 	*/
 	private function load_dependencies($plugin_name, $version)
 	{
-		require_once ( plugin_dir_url(__FILE__) . "/../includes/class-iomn-eventi-data" );
+		require_once ( plugin_dir_path(__FILE__) . "/../includes/class-iomn-eventi-data.php" );
 	}
 
 	/**
@@ -111,6 +114,7 @@ class Iomn_Eventi_Admin
 		wp_enqueue_script('jquery-ui-datepicker');
 		wp_enqueue_script('jquery-ui-spinner');
 		wp_enqueue_script('jquery-ui-timepicker', plugin_dir_url(__FILE__).'js/jquery.ui.timepicker.js', array('jquery-ui-core'), $this->version, false);
+		wp_enqueue_script('jquery-ui-datepicker');
 
 	}
 
@@ -124,13 +128,19 @@ class Iomn_Eventi_Admin
 		add_meta_box($this->plugin_name, 'Eventi IOMN', array($this, 'render_meta_box'), 'iomn_eventi', 'normal', 'core');
 	}
 
+	public function save_meta_box($post_id) {
+		$mbdata = new Iomn_Eventi_Data( $post_id );
+		$mbdata->load_form_fields();
+		$mbdata->save_data();
+	}
+
 	/**
 	* Renders meta box html.
 	*
 	* @since    1.0.0
 	*/
-	public function render_meta_box()
-	{
-		require_once plugin_dir_path(__FILE__).'partials/iomn-eventi-admin-render-meta-box.php';
+	public function render_meta_box($post)	{
+		$evdata = new Iomn_Eventi_Data($post->ID);
+		require plugin_dir_path(__FILE__).'partials/iomn-eventi-admin-render-meta-box.php';
 	}
 }

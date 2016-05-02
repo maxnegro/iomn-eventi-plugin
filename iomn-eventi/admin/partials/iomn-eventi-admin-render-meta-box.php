@@ -12,10 +12,48 @@ wp_nonce_field('_iomn_eventi_nonce', 'iomn_eventi_nonce');
 
 <table>
   <caption>Date ed orari delle attività</caption>
+  <?php
+  if ($evdata->sessions() > 0) {
+  for ($i=0; $i < $evdata->sessions(); $i++) {
+    $ev = $evdata->get_session($i);
+    ?>
   <tr class="iomn_ev_row">
     <td>
-      <label for="iomn_ev_type">Tipo attività</label><br />
-      <select name="iomn_ev_type[]" id="iomn_ev_type" value="<?php // echo iomn_get_meta('iomn_pre_data'); ?>">
+      <label>Tipo attività</label><br />
+      <select name="iomn_ev_tipo[]">
+        <option value="">Selezionare</option>
+        <option value="preop" <?php echo ($ev['type'] == 'preop' ? 'selected' : ''); ?>>Preoperatorio</option>
+        <option value="op" <?php echo ($ev['type'] == 'op' ? 'selected' : ''); ?>>Operatorio</option>
+        <option value="na" <?php echo ($ev['type'] == 'na' ? 'selected' : ''); ?>>Generico</option>
+      </select>
+    </td>
+    <td>
+      <label><?php _e('Data', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_data[]" class="iomn_ev_data" value="<?php echo date('d/m/Y', $ev['date']); ?>">
+    </td><td>
+      <label><?php _e('Dalle', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_dalle[]" class="iomn_ev_dalle" value="<?php echo $ev['from']; ?>">
+    </td><td>
+      <label><?php _e('Alle', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_alle[]" class="iomn_ev_alle" value="<?php echo $ev['to']; ?>">
+    </td>
+    <td>
+      <label><?php _e('Sala', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_sala[]" class="iomn_ev_sala" value="<?php echo $ev['location']; ?>">
+    </td>
+    <td>
+      <br />
+      <button class="iomn_ev_del"><i class="fa fa-minus-circle"></i></button>
+    </td>
+  </tr>
+  <?php
+  } // end for
+  } else {
+    ?>
+  <tr class="iomn_ev_row">
+    <td>
+      <label>Tipo attività</label><br />
+      <select name="iomn_ev_tipo[]">
         <option value="">Selezionare</option>
         <option value="preop">Preoperatorio</option>
         <option value="op">Operatorio</option>
@@ -23,28 +61,32 @@ wp_nonce_field('_iomn_eventi_nonce', 'iomn_eventi_nonce');
       </select>
     </td>
     <td>
-      <label for="iomn_ev_data"><?php _e('Data', 'evento'); ?></label><br>
-      <input type="text" name="iomn_ev_data[]" class="iomn_ev_data" value="<?php // echo iomn_get_meta('iomn_pre_data'); ?>">
+      <label><?php _e('Data', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_data[]" class="iomn_ev_data">
     </td><td>
-      <label for="iomn_ev_dalle"><?php _e('Dalle', 'evento'); ?></label><br>
-      <input type="text" name="iomn_ev_dalle[]" class="iomn_ev_dalle" value="<?php // echo iomn_get_meta('iomn_pre_dalle'); ?>">
+      <label><?php _e('Dalle', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_dalle[]" class="iomn_ev_dalle">
     </td><td>
-      <label for="iomn_ev_alle"><?php _e('Alle', 'evento'); ?></label><br>
-      <input type="text" name="iomn_ev_alle" class="iomn_ev_alle" value="<?php // echo iomn_get_meta('iomn_pre_alle'); ?>">
+      <label><?php _e('Alle', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_alle[]" class="iomn_ev_alle">
     </td>
     <td>
-      <label for="iomn_ev_sala"><?php _e('Sala', 'evento'); ?></label><br>
-      <input type="text" name="iomn_ev_sala[]" class="iomn_ev_sala" value="<?php // echo iomn_get_meta('iomn_pre_sala'); ?>">
+      <label><?php _e('Sala', 'evento'); ?></label><br>
+      <input type="text" name="iomn_ev_sala[]" class="iomn_ev_sala">
     </td>
     <td>
       <br />
       <button class="iomn_ev_del"><i class="fa fa-minus-circle"></i></button>
     </td>
   </tr>
+  <?php
+  } // end if
+  ?>
   <tr>
     <td colspan="4">
     </td>
     <td colspan="2" style="text-align: right">
+      <br />
       <button id="iomn_ev_add">Aggiungi Nuovo <i class="fa fa-plus-circle"></i></button>
     </td>
   </tr>
@@ -69,7 +111,38 @@ jQuery(function ($) {
   };
 
   $('#iomn_ev_add').click(function () {
-    $('.iomn_ev_row').last('tr').after('<tr class="iomn_ev_row"><td> <label for="iomn_ev_type">Tipo attività</label><br /> <select name="iomn_ev_type[]" id="iomn_ev_type"> <option value="">Selezionare</option> <option value="preop">Preoperatorio</option> <option value="op">Operatorio</option> <option value="na">Generico</option> </select> </td> <td> <label for="iomn_ev_data"><?php _e('Data', 'evento'); ?></label><br> <input type="text" name="iomn_ev_data[]" class="iomn_ev_data"> </td><td> <label for="iomn_ev_dalle"><?php _e('Dalle', 'evento'); ?></label><br> <input type="text" name="iomn_ev_dalle[]" class="iomn_ev_dalle"> </td><td> <label for="iomn_ev_alle"><?php _e('Alle', 'evento'); ?></label><br> <input type="text" name="iomn_ev_alle" class="iomn_ev_alle" > </td> <td> <label for="iomn_ev_sala"><?php _e('Sala', 'evento'); ?></label><br> <input type="text" name="iomn_ev_sala[]" class="iomn_ev_sala"> </td> <td> <br /> <button class="iomn_ev_del"><i class="fa fa-minus-circle"></i></button> </td> </tr> ');
+    $('.iomn_ev_row').last('tr').after(
+      '<tr class="iomn_ev_row">'+
+      '<td>'+
+      ' <label>Tipo attività</label><br />'+
+      ' <select name="iomn_ev_type[]">'+
+      ' <option value="">Selezionare</option>'+
+      ' <option value="preop">Preoperatorio</option>'+
+      ' <option value="op">Operatorio</option>'+
+      ' <option value="na">Generico</option>'+
+      ' </select>'+
+      '</td>'+
+      '<td>'+
+      ' <label><?php _e('Data', 'evento'); ?></label><br />'+
+      ' <input type="text" name="iomn_ev_data[]" class="iomn_ev_data">'+
+      '</td>'+
+      '<td>'+
+      ' <label><?php _e('Dalle', 'evento'); ?></label><br />'+
+      ' <input type="text" name="iomn_ev_dalle[]" class="iomn_ev_dalle">'+
+      '</td>'+
+      '<td>'+
+      ' <label><?php _e('Alle', 'evento'); ?></label><br />'+
+      ' <input type="text" name="iomn_ev_alle[]" class="iomn_ev_alle" >'+
+      '</td>'+
+      '<td>'+
+      ' <label><?php _e('Sala', 'evento'); ?></label><br />'+
+      ' <input type="text" name="iomn_ev_sala[]" class="iomn_ev_sala">'+
+      '</td>'+
+      '<td>'+
+      ' <br /> <button class="iomn_ev_del"><i class="fa fa-minus-circle"></i></button>'+
+      '</td>'+
+      '</tr>'
+    );
     $('.iomn_ev_del').click(function () {
       if($('.iomn_ev_row').length > 1) {
         $(this).closest('tr').remove();
@@ -78,6 +151,7 @@ jQuery(function ($) {
     });
     $('.iomn_ev_dalle').timepicker(tpdata);
     $('.iomn_ev_alle').timepicker(tpdata);
+    $('.iomn_ev_data').datepicker({minDate: 1, maxDate: "+1Y", dateFormat: "dd/mm/yy", regional: "it"});
     return false;
   });
 
@@ -87,7 +161,7 @@ jQuery(function ($) {
     }
     return false;
   });
-  
+
   $('.iomn_ev_dalle').timepicker(tpdata);
   $('.iomn_ev_alle').timepicker(tpdata);
 
@@ -117,10 +191,13 @@ jQuery(function ($) {
   <tr>
     <td>
       <label for="iomn_medici"><?php _e('Medici', 'evento'); ?></label><br>
-      <input type="text" name="iomn_medici" id="iomn_medici" value="<?php // echo iomn_get_meta('iomn_medici'); ?>">
+      <input type="text" name="iomn_medici" id="iomn_medici" value="<?php echo $evdata->seats('medici'); ?>">
     </td><td>
       <label for="iomn_tnfp"><?php _e('TNFP', 'evento'); ?></label><br>
-      <input type="text" name="iomn_tnfp" id="iomn_tnfp" value="<?php // echo iomn_get_meta('iomn_tnfp'); ?>"></td>
+      <input type="text" name="iomn_tnfp" id="iomn_tnfp" value="<?php echo $evdata->seats('tnfp'); ?>"></td>
+    </td><td>
+      <label for="iomn_generici"><?php _e('Generici', 'evento'); ?></label><br>
+      <input type="text" name="iomn_generici" id="iomn_generici" value="<?php echo $evdata->seats('generici'); ?>"></td>
     </tr>
   </table>
   <script>
@@ -150,91 +227,13 @@ jQuery(function ($) {
 
     // Imposta datepicker e timepicker per i campi relativi
     jQuery(document).ready(function () {
-      jQuery("#iomn_op_data").datepicker({minDate: 1, maxDate: "+1Y", dateFormat: "dd/mm/yy", regional: "it",
-      onSelect: function () {
-        //- get date from another datepicker without language dependencies
-        var minDate = jQuery('#iomn_op_data').datepicker('getDate');
-        minDate.setDate(minDate.getDate() - 1);
-        jQuery("#iomn_pre_data").datepicker("change", {maxDate: minDate});
-      }
+      jQuery(".iomn_ev_data").datepicker({minDate: 1, maxDate: "+1Y", dateFormat: "dd/mm/yy", regional: "it",
+      // onSelect: function () {
+      //   //- get date from another datepicker without language dependencies
+      //   var minDate = jQuery('.iomn_op_data').datepicker('getDate');
+      //   minDate.setDate(minDate.getDate() - 1);
+      //   jQuery(".iomn_pre_data").datepicker("change", {maxDate: minDate});
+      // }
     });
-    jQuery(".iomn_op_dalle").timepicker({
-      showPeriodLabels: false,
-      hours: {
-        starts: 7, // First displayed hour
-        ends: 20                  // Last displayed hour
-      },
-      minutes: {
-        starts: 0, // First displayed minute
-        ends: 45, // Last displayed minute
-        interval: 15, // Interval of displayed minutes
-        manual: []                // Optional extra entries for minutes
-      },
-      hourText: 'Ore', // Define the locale text for "Hours"
-      minuteText: 'Minuti', // Define the locale text for "Minute"
-      amPmText: ['AM', 'PM'], // Define the locale text for periods
-
-    });
-    jQuery(".iomn_op_alle").timepicker({
-      showPeriodLabels: false,
-      hours: {
-        starts: 7, // First displayed hour
-        ends: 20                  // Last displayed hour
-      },
-      minutes: {
-        starts: 0, // First displayed minute
-        ends: 45, // Last displayed minute
-        interval: 15, // Interval of displayed minutes
-        manual: []                // Optional extra entries for minutes
-      },
-      hourText: 'Ore', // Define the locale text for "Hours"
-      minuteText: 'Minuti', // Define the locale text for "Minute"
-      amPmText: ['AM', 'PM'], // Define the locale text for periods
-
-    });
-
-    jQuery(".iomn_pre_data").datepicker({minDate: 1, maxDate: "+1Y", dateFormat: "dd/mm/yy", regional: "it",
-    onSelect: function () {
-      //- get date from another datepicker without language dependencies
-      var minDate = jQuery('#iomn_pre_data').datepicker('getDate');
-      minDate.setDate(minDate.getDate() + 1);
-      jQuery("#iomn_op_data").datepicker("change", {minDate: minDate});
-    }
   });
-
-  jQuery(".iomn_pre_dalle").timepicker({
-    showPeriodLabels: false,
-    hours: {
-      starts: 7, // First displayed hour
-      ends: 20                  // Last displayed hour
-    },
-    minutes: {
-      starts: 0, // First displayed minute
-      ends: 45, // Last displayed minute
-      interval: 15, // Interval of displayed minutes
-      manual: []                // Optional extra entries for minutes
-    },
-    hourText: 'Ore', // Define the locale text for "Hours"
-    minuteText: 'Minuti', // Define the locale text for "Minute"
-    amPmText: ['AM', 'PM'], // Define the locale text for periods
-
-  });
-  jQuery(".iomn_pre_alle").timepicker({
-    showPeriodLabels: false,
-    hours: {
-      starts: 7, // First displayed hour
-      ends: 20                  // Last displayed hour
-    },
-    minutes: {
-      starts: 0, // First displayed minute
-      ends: 45, // Last displayed minute
-      interval: 15, // Interval of displayed minutes
-      manual: []                // Optional extra entries for minutes
-    },
-    hourText: 'Ore', // Define the locale text for "Hours"
-    minuteText: 'Minuti', // Define the locale text for "Minute"
-    amPmText: ['AM', 'PM'], // Define the locale text for periods
-
-  });
-});
 </script>
