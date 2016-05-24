@@ -1,0 +1,46 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 26-ott-2015, 10.27.06
+    Author     : negro
+*/
+
+.iomn-container {
+    /* basic styling */
+
+    border: 1px solid #555;
+    border-radius: 20px;
+    padding: 10px;
+    
+    /* flexbox setup */
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+
+.iomn-container > div {
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+    /* width: 30px;*/
+}
+
+.iomn-date-detail {
+    -webkit-flex: 1 1 70px;
+    flex: 1 1 auto;
+    padding: 12px;
+    margin: 5px;
+    border: solid darkgrey 3px;
+    background-color: lightgrey;
+    border-radius: 20px;
+    width: 20px;
+}
+
+.iomn-location-detail {
+    padding: 12px;
+    margin: 5px;
+    width: 100px;
+}

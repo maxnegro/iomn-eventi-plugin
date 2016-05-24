@@ -59,6 +59,7 @@ class Iomn_Eventi_Public {
 	public function init() {
 		add_feed('iomn-eventi-json', array($this, 'json_feed'));
 		add_shortcode('iomn-calendar', array($this, 'fullcalendar_shortcode'));
+		add_filter('the_content', array($this, 'single_post_filter'));
 	}
 
 	public function json_feed() {
@@ -86,16 +87,18 @@ class Iomn_Eventi_Public {
 				$tdinfo = "";
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
-					$tdinfo .= date('d/m/Y', $ce['date']) . " " . $ce['from'] . " " . $ce['to'] . " " . $ce['location'] . "<br />";
+					$tdinfo .= date('d/m/Y', $ce['date']) . " " . $ce['from'] . "-" . $ce['to'] . " " . $ce['location'] . "<br />";
 				}
 				$evdata = array(
 					'dove' => $mbdata->get_location(),
 					'quando' => $tdinfo,
 					'descrizione' => $post->post_content,
-					'tnfptot' => $mbdata->attendees('tnfp'),
-					'tnfpdispo' => $mbdata->seats('tnfp'),
-					'medtot' => $mbdata->attendees('med'),
-					'meddispo' => $mbdata->seats('med')
+					'gentot' => $mbdata->seats('generici'),
+					'gendispo' => $mbdata->seats('generici') - $mbdata->attendees('generici'),
+					'tnfptot' => $mbdata->seats('tnfp'),
+					'tnfpdispo' => $mbdata->seats('tnfp') - $mbdata->attendees('tnfp'),
+					'medtot' => $mbdata->seats('medici'),
+					'meddispo' => $mbdata->seats('medici') - $mbdata->attendees('medici')
 				);
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
@@ -115,65 +118,31 @@ class Iomn_Eventi_Public {
 				}
 			}
     }
-// // - query -
-//     global $wpdb;
-//     $querystr = "
-//         SELECT *
-//         FROM $wpdb->posts wposts, $wpdb->postmeta metastart, $wpdb->postmeta metaend
-//         WHERE (wposts.ID = metastart.post_id AND wposts.ID = metaend.post_id)
-//         AND (metaend.meta_key = '_end_timestamp' AND metaend.meta_value > '$today' )
-//         AND metastart.meta_key = '_start_timestamp'
-//         AND wposts.post_type = 'event'
-//         AND wposts.post_status = 'publish'
-//         ORDER BY metastart.meta_value ASC LIMIT 500
-//      ";
-//
-//     $events = $wpdb->get_results($querystr, OBJECT);
-//
-//     // - loop -
-//     if ($events) {
-//         global $post;
-//         foreach ($events as $post) {
-//             setup_postdata($post);
-//
-//             // - custom post type variables -
-//             $custom = get_post_custom(get_the_ID());
-//             $start = $custom["_start_timestamp"][0];
-//             $end = $custom["_end_timestamp"][0];
-//
-//             $gmts = get_gmt_from_date($gmts); // this function requires Y-m-d H:i:s
-//             $gmts = strtotime($gmts);
-//
-//             // - grab gmt for end -
-//             $gmte = date('Y-m-d H:i:s', strtotime($end));
-//             $gmte = get_gmt_from_date($gmte); // this function requires Y-m-d H:i:s
-//             $gmte = strtotime($gmte);
-//
-//             // - set to ISO 8601 date format -
-//             $stime = date('c', $gmts);
-//             $etime = date('c', $gmte);
-//
-//             // - json items -
-//             $jsonevents[] = array(
-//                 'title' => $post->post_title,
-//                 'allDay' => false, // <- true by default with FullCalendar
-//                 'start' => $stime,
-//                 'end' => $etime,
-//                 'url' => get_permalink($post->ID)
-//             );
-//         }
-//     }
     // - fire away -
     wp_send_json($jsonevents);
 	}
 
 	public function _renderEventDescription($data) {
-	  $html = <<<"ENDHTML"
-	  <div>{$data['quando']}</div>
-	  <div style="margin-bottom: 1em;">{$data['dove']}</div>
-	  <div style="margin-bottom: 1em;">{$data['descrizione']}</div>
-	  <div>Posti disponibili: {$data['tnfpdispo']}/{$data['tnfptot']} TNFP {$data['meddispo']}/{$data['medtot']} Medici</div>
-ENDHTML;
+		$html = "";
+	  $html .= "<div>" .$data['quando'] . "</div>\n";
+	  $html .= "<div style=\"margin-top: 1em; margin-bottom: 1em;\">" . $data['dove'] . "</div>\n";
+	  $html .= "<div style=\"margin-bottom: 1em;\">" . $data['descrizione'] . "</div>\n";
+		$html .= "<div>\n";
+
+		if ($data['gentot'] + $data['tnfptot'] + $data['medtot'] > 0) {
+			$html .= "Posti disponibili: ";
+		}
+		if ($data['gentot'] > 0) {
+			$html .= sprintf("Generici: %s/%s ", $data['gendispo'], $data['gentot']);
+		}
+		if ($data['tnfptot'] > 0) {
+			$html .= sprintf("TNFP: %s/%s ", $data['tnfpdispo'], $data['tnfptot']);
+		}
+		if ($data['medtot'] > 0) {
+			$html .= sprintf("Medici: %s/%s ", $data['meddispo'], $data['medtot']);
+		}
+	  // <div>Posti disponibili: TNFP: {$data['tnfpdispo']}/{$data['tnfptot']} Medici: {$data['meddispo']}/{$data['medtot']}</div>
+		$html .= "</div>\n";
 	  return $html;
 	}
 
@@ -205,7 +174,8 @@ ENDHTML;
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/iomn-eventi-public.css', array(), $this->version, 'all' );
-		wp_enqueue_style('iomn-fullcalendar-css', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.css', array(), $this->version, 'all' );
+		wp_enqueue_style('iomn-bootstrap-css', plugin_dir_url( __FILE__ ) . 'css/bootstrap.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style('iomn-fullcalendar-css', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.min.css', array(), $this->version, 'all' );
     wp_enqueue_style('iomn-fullcalendar-print-css', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.print.css', array('iomn-fullcalendar-css'), $this->version, 'print');
 
 	}
@@ -237,4 +207,119 @@ ENDHTML;
 
 	}
 
+  public function single_post_filter($content) {
+		if (is_singular('iomn_eventi')) {
+				$new_content = $this->single_post_html();
+				$content = $new_content;
+		}
+		return $content;
+	}
+
+	public function single_post_html() {
+		wp_enqueue_style('iomn-bootstrap-css', plugins_url('css/bootstrap.min.css', __FILE__));
+		wp_enqueue_script("iomn-bootstrap", plugins_url('js/bootstrap.min.js', __FILE__), array('jquery'));
+		wp_enqueue_script('ajaxreserve', plugins_url('js/ajaxreserveajax.js', __FILE__), array('jquery'));
+		wp_localize_script( 'ajaxreserve', 'iomn_reserve_ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+
+			global $post;
+			$data["pre_data"] = iomn_get_meta('iomn_pre_data');
+			$data["pre_dalle"] = iomn_get_meta('iomn_pre_dalle');
+			$data["pre_alle"] = iomn_get_meta('iomn_pre_alle');
+			$data["pre_sala"] = iomn_get_meta('iomn_pre_sala');
+			$data["op_data"] = iomn_get_meta('iomn_op_data');
+			$data["op_dalle"] = iomn_get_meta('iomn_op_dalle');
+			$data["op_alle"] = iomn_get_meta('iomn_op_alle');
+			$data["op_sala"] = iomn_get_meta('iomn_op_sala');
+			$data["descrizione"] = get_the_content();
+			$ospedali = get_terms('iomn_strutture', 'hide_empty=0');
+			$selezione = wp_get_object_terms($post->ID, 'iomn_strutture');
+			foreach ($ospedali as $ospedale) {
+				if (!is_wp_error($selezione) && !empty($selezione) && !strcmp($ospedale->slug, $selezione[0]->slug)) {
+					$data["ospedale"] = $ospedale->name; // L'ospedale dovrebbe essere unico
+				}
+			}
+			$prenotazione = new IomnPrenotazione($post->ID);
+			$data['tnfptot'] = $prenotazione->disponibili('tnfp');
+			$data['tnfpdispo'] = $prenotazione->disponibili('tnfp') - $prenotazione->iscritti('tnfp');
+			$data['medtot'] = $prenotazione->disponibili('medici');
+			$data['meddispo'] = $prenotazione->disponibili('medici') - $prenotazione->iscritti('medici');
+
+			$html = <<<"ENDHTML"
+			<div class="iomn-container">
+					<div class="iomn-location-detail"><big>
+					{$data["ospedale"]}
+					</big></div>
+					<div class="iomn-date-detail">
+							<div><strong><big>{$data["pre_data"]}</big></strong></div>
+							<div>{$data["pre_dalle"]}-{$data["pre_alle"]}</div>
+							<div class="iomn-op">Pre-operatorio</div>
+							<div><em>{$data["pre_sala"]}</em></div>
+					</div>
+					<div  class="iomn-date-detail">
+							<div><strong><big>{$data["op_data"]}</big></strong></div>
+							<div>{$data["op_dalle"]}-{$data["op_alle"]}</div>
+							<div class="iomn-op">Operatorio</div>
+							<div><em>{$data["op_sala"]}</em></div>
+					</div>
+			</div>
+			<hr />
+			<div>
+					{$data["descrizione"]}
+			</div>
+			<hr />
+			<div>
+					<h4>Posti disponibili</h4>
+					Medici: {$data["meddispo"]}/{$data["medtot"]} <button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
+							jQuery('#modalTitle').html('Prenotazione Medico');
+							jQuery('#ajaxcontacttype').val('med');
+							jQuery('#ajaxcontact-form').show();
+							jQuery('#ajaxSubmit').show();
+							jQuery('#ajaxcontact-response').html('');
+							jQuery('#iomnReserveModal').modal();
+					};">Prenota</button>
+					-
+					TNFP: {$data["tnfpdispo"]}/{$data["tnfptot"]} <button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
+							jQuery('#modalTitle').html('Prenotazione TNFP');
+							jQuery('#ajaxcontacttype').val('tnfp');
+							jQuery('#ajaxcontact-form').show();
+							jQuery('#ajaxSubmit').show();
+							jQuery('#ajaxcontact-response').html('');
+							jQuery('#iomnReserveModal').modal();
+					};">Prenota</button>
+			</div>
+			<div id="iomnReserveModal" class="modal fade">
+					<div class="modal-dialog">
+							<div class="modal-content">
+									<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+											<h4 id="modalTitle" class="modal-title"></h4>
+									</div>
+									<div id="modalBody" class="modal-body">
+										<div id="ajaxcontact-response" style="background-color:#E6E6FA ;color:blue;"></div>
+										<div id="ajaxcontact-form">
+											<form id="iomn-ajax-form" action="" method="post" enctype="multipart/form-data">
+											<input id="ajaxcontacttype" type="hidden" name="ajaxcontacttype" value="">
+											<div id="ajaxcontact-text">
+											<strong>Nome e cognome </strong> <br/>
+											<input type="text" id="ajaxcontactname" name="ajaxcontactname"/><br />
+											<br/>
+											<strong>Email </strong> <br/>
+											<input type="text" id="ajaxcontactemail" name="ajaxcontactemail"/><br />
+											<br/>
+											</div>
+										</form>
+										</div>
+									</div>
+									<div class="modal-footer">
+											<button  style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+											<a class="btn btn-primary" role="button" id="ajaxSubmit" onclick="ajaxformsendmail(ajaxcontactname.value,ajaxcontactemail.value,ajaxcontacttype.value);">Prenota</a>
+									</div>
+							</div>
+					</div>
+			</div>
+
+ENDHTML;
+			return $html;
+
+	}
 }

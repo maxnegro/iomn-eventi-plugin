@@ -202,14 +202,14 @@ class Iomn_Eventi_Data {
     if (defined($this->event['who'] && defined($this->event['who'][$type]))) {
       return count($this->event['who'][$type]);
     }
-    return NULL;
+    return 0;
   }
 
   public function seats( $type ) {
     if (isset($this->event['seats']) && isset($this->event['seats'][$type])) {
       return $this->event['seats'][$type];
     }
-    return NULL;
+    return 0;
   }
 
 }
