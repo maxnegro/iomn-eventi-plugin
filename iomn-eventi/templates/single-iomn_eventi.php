@@ -35,6 +35,7 @@ get_header(); ?>
       // $data['meddispo'] = $prenotazione->disponibili('medici') - $prenotazione->iscritti('medici');
 
       ?>
+      <h1><?php the_title(); ?></h1>
       <div class="iomn-container">
           <div class="iomn-location-detail"><big>
           <?php echo $evdata->get_location(); ?>
@@ -117,6 +118,7 @@ get_header(); ?>
               </div>
           </div>
       </div>
+      <br />
       <?php
 			if ( is_singular( 'iomn_eventi' ) ) {
 				// Previous/next post navigation.
