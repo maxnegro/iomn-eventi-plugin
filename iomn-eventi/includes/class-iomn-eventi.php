@@ -225,8 +225,10 @@ class Iomn_Eventi {
 		$this->loader->add_action( 'save_post', $plugin_admin, 'save_meta_box');
 		$this->loader->add_action( 'show_user_profile', $plugin_admin, 'add_user_specialty');
 		$this->loader->add_action( 'edit_user_profile', $plugin_admin, 'add_user_specialty');
+		$this->loader->add_action( 'user_new_form', $plugin_admin, 'add_user_specialty');
 		$this->loader->add_action( 'personal_options_update', $plugin_admin, 'save_user_specialty');
 		$this->loader->add_action( 'edit_user_profile_update', $plugin_admin, 'save_user_specialty');
+		$this->loader->add_action( 'user_register', $plugin_admin, 'save_user_specialty');
 	}
 
 	/**
