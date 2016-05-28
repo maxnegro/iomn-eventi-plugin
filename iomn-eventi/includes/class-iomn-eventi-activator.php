@@ -30,6 +30,22 @@ class Iomn_Eventi_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
+		global $wpdb;
+		$iomn_eventi_db_version = 3.0;
+		$installed_version = get_option('iomn_eventi_db_version');
+		if ( $installed_version != $iomn_eventi_db_version ) {
+			$table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
+			$sql = "CREATE TABLE $table_name (
+								id mediumint(9) NOT NULL AUTO_INCREMENT,
+								time datetime  NOT NULL,
+								id_evento bigint(20) NOT NULL,
+								id_user bigint(20) NOT NULL,
+								UNIQUE KEY id (id)
+			);";
+			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+			dbDelta($sql);
+			update_option('iomn_eventi_db_version', $iomn_eventi_db_version);
+		}
 
 	}
 

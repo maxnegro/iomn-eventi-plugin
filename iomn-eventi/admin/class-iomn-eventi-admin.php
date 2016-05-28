@@ -143,4 +143,17 @@ class Iomn_Eventi_Admin
 		$evdata = new Iomn_Eventi_Data($post->ID);
 		require plugin_dir_path(__FILE__).'partials/iomn-eventi-admin-render-meta-box.php';
 	}
+
+	public function add_user_specialty( $user ) {
+		require plugin_dir_path(__FILE__).'partials/iomn-eventi-admin-add-user-specialty.php';
+	}
+
+	public function save_user_specialty( $user_id ) {
+		if ( !current_user_can( 'edit_user', $user_id ) )
+			return false;
+
+		/* Copy and paste this line for additional fields. Make sure to change 'twitter' to the field ID. */
+		update_usermeta( $user_id, 'specialty', $_POST['specialty'] );
+	}
+
 }
