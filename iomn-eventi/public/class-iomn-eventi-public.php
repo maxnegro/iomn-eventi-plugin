@@ -186,7 +186,7 @@ class Iomn_Eventi_Public {
 		wp_enqueue_style('iomn-bootstrap-css', plugin_dir_url( __FILE__ ) . 'css/bootstrap.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style('iomn-fullcalendar-css', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.min.css', array(), $this->version, 'all' );
     wp_enqueue_style('iomn-fullcalendar-print-css', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.print.css', array('iomn-fullcalendar-css'), $this->version, 'print');
-		wp_enqueue_style('iomn-eventi-post', plugin_dir_url( __FILE__ ) . 'css/iomn-eventi-post.css', array(), $this->version, 'all' );
+		wp_enqueue_style('iomn-eventi-post', plugin_dir_url( __FILE__ ) . 'css/iomn-eventi-post.css', array(), $this->version, 'all');
 
 	}
 
