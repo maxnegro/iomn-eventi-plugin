@@ -49,7 +49,29 @@ class Iomn_Eventi_Admin
 		$this->version = $version;
 
 		$this->load_dependencies(	$this->plugin_name, $this->version );
-
+		add_filter('manage_iomn_eventi_posts_columns', array($this, 'add_iomn_eventi_columns'));
+		add_action('manage_iomn_eventi_posts_custom_column', array($this, 'custom_iomn_eventi_posts_column'), 10, 2);
+		// function add_scp_columns($columns) {
+		//   return array_merge($columns,
+		//   array('scp_category' => 'Categoria')
+		// );
+		// }
+		// add_filter('manage_sc_portfolio_posts_columns', 'add_scp_columns');
+		//
+		// function custom_sc_portfolio_column($column, $post_id) {
+		//   switch ($column) {
+		//     case 'scp_category':
+		//     $terms = get_the_term_list( $post_id, 'scp_category', '', ',', '');
+		//     if (is_string($terms)) {
+		//       echo $terms;
+		//     } else {
+		//       echo "--";
+		//     }
+		//     break;
+		//   }
+		//   return;
+		// }
+		// add_action('manage_sc_portfolio_posts_custom_column', 'custom_sc_portfolio_column', 10, 2);
 	}
 
 	/**
@@ -156,4 +178,39 @@ class Iomn_Eventi_Admin
 		update_usermeta( $user_id, 'specialty', $_POST['specialty'] );
 	}
 
+  public function add_iomn_eventi_columns($columns) {
+		return array(
+			'title' => 'Titolo',
+			'iomn_when' => 'Date',
+			'iomn_where' => 'Ospedale',
+			'iomn_who' => 'Prenotazioni',
+			'date' => 'Inserimento'
+		);
+	}
+
+	public function custom_iomn_eventi_posts_column($column, $post_id) {
+		$evdata = new Iomn_Eventi_Data($post_id);
+		switch ($column) {
+			case 'iomn_when':
+			  for ($i=0; $i<$evdata->sessions(); $i++) {
+					$session = $evdata->get_session($i);
+					echo date('d/m/Y', $session['date']) . "<br />\n";
+				}
+			break;
+			case 'iomn_where':
+				echo $evdata->get_location();
+			break;
+			case 'iomn_who':
+			  if ($evdata->seats('medici') > 0) {
+			  	printf("Medici: %d/%d<br />\n", $evdata->attendees('medici'), $evdata->seats('medici'));
+				}
+				if ($evdata->seats('tnfp') > 0) {
+					printf("TNFP: %d/%d<br />\n", $evdata->attendees('tnfp'), $evdata->seats('tnfp'));
+				}
+				if ($evdata->seats('generici') > 0) {
+					printf("Generici: %d/%d<br />\n", $evdata->attendees('generici'), $evdata->seats('generici'));
+				}
+			break;
+		}
+	}
 }

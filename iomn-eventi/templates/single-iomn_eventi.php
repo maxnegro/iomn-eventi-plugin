@@ -70,23 +70,24 @@ get_header(); ?>
       <hr />
       <div>
           <h4>Posti disponibili</h4>
-          Medici: <?php printf('%d/%d', $evdata->seats('medici')-$evdata->attendees('medici'), $evdata->seats('medici')); ?> <button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
-              jQuery('#modalTitle').html('Prenotazione Medico');
-              jQuery('#ajaxcontacttype').val('med');
-              jQuery('#ajaxcontact-form').show();
-              jQuery('#ajaxSubmit').show();
-              jQuery('#ajaxcontact-response').html('');
-              jQuery('#iomnReserveModal').modal();
-          };">Prenota</button>
+          Medici: <?php printf('%d/%d', $evdata->vacancies('medici'), $evdata->seats('medici')); ?>
           -
-          TNFP: <?php printf('%d/%d', $evdata->seats('tnfp')-$evdata->attendees('tnfp'), $evdata->seats('tnfp')); ?> <button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
+          TNFP: <?php printf('%d/%d', $evdata->vacancies('tnfp'), $evdata->seats('tnfp')); ?>
+					-
+					Generici:  <?php printf('%d/%d', $evdata->vacancies('generici'), $evdata->seats('generici')); ?>
+					<?php
+					$user = wp_get_current_user();
+					if ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
+					?>
+						<button id="iomn_button_reserve_med" style="float: right;" class="btn btn-success" onclick="{
               jQuery('#modalTitle').html('Prenotazione TNFP');
               jQuery('#ajaxcontacttype').val('tnfp');
               jQuery('#ajaxcontact-form').show();
               jQuery('#ajaxSubmit').show();
               jQuery('#ajaxcontact-response').html('');
               jQuery('#iomnReserveModal').modal();
-          };">Prenota</button>
+          	};">Prenota</button>
+					<?php endif; ?>
       </div>
       <div id="iomnReserveModal" class="modal fade">
           <div class="modal-dialog">

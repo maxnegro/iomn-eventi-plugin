@@ -45,3 +45,11 @@ and open the template in the editor.
     margin: 5px;
     width: 100px;
 }
+
+.nav-next {
+  float: right;
+}
+
+.nav-previous {
+  float: left;
+}

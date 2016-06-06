@@ -212,4 +212,8 @@ class Iomn_Eventi_Data {
     return 0;
   }
 
+  public function vacancies ( $type ) {
+    return $this->seats($type) - $this->attendees ($type);
+  }
+
 }

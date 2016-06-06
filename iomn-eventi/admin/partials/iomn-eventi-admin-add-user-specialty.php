@@ -11,7 +11,7 @@
           $currentspec = esc_attr( get_the_author_meta( 'specialty', $user->ID ) );
         }
         ?>
-        <option value="medico" <?php echo $currentspec == 'medico' ? "SELECTED" : ""; ?>>Medico</option>
+        <option value="medici" <?php echo $currentspec == 'medici' ? "SELECTED" : ""; ?>>Medico</option>
         <option value="tnfp" <?php echo $currentspec == 'tnfp' ? "SELECTED" : ""; ?>>TNFP</option>
       </select>
       <span class="description">Selezionare la specialità.</span>
