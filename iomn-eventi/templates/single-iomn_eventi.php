@@ -77,7 +77,12 @@ get_header(); ?>
 			<span style="padding-left: 4em;"></span>
 			<?php
 			$user = wp_get_current_user();
-			if ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
+			if ($evdata->reservedby($user->ID)) :	?>
+				<span class="label label-success">Già prenotato a tuo nome<span style="padding-left: 1em;"></span>
+							<button id="iomn_button_reserve_med" class="btn btn-warning" onclick="return false;">Disdici</button>
+							</span>
+				<?php
+			elseif ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
 				$sptext = "";
 				$spcode = "";
 				if ($evdata->vacancies($user->get('specialty')) > 0) {

@@ -221,4 +221,12 @@ class Iomn_Eventi_Data {
     return $retval;
   }
 
+  public function reservedby ($user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
+
+    $retval = $wpdb->get_row($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} WHERE id_evento = %d AND id_user = %d", $this->post_id, $user_id), ARRAY_N);
+    return ($retval[0] > 0);
+  }
+
 }
