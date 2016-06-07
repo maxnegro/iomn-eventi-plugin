@@ -100,18 +100,18 @@ class Iomn_Eventi_Public {
 				$tdinfo = "";
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
-					$tdinfo .= date('d/m/Y', $ce['date']) . " " . $ce['from'] . "-" . $ce['to'] . " " . $ce['location'] . "<br />";
+					$tdinfo .= "<strong>". date('d/m/Y', $ce['date']) . "</strong> " . $ce['from'] . "-" . $ce['to'] . "<br />";
 				}
 				$evdata = array(
 					'dove' => $mbdata->get_location(),
 					'quando' => $tdinfo,
 					'descrizione' => $post->post_content,
 					'gentot' => $mbdata->seats('generici'),
-					'gendispo' => $mbdata->seats('generici') - $mbdata->attendees('generici'),
+					'gendispo' => $mbdata->vacancies('generici'),
 					'tnfptot' => $mbdata->seats('tnfp'),
-					'tnfpdispo' => $mbdata->seats('tnfp') - $mbdata->attendees('tnfp'),
+					'tnfpdispo' => $mbdata->vacancies('tnfp'),
 					'medtot' => $mbdata->seats('medici'),
-					'meddispo' => $mbdata->seats('medici') - $mbdata->attendees('medici')
+					'meddispo' => $mbdata->vacancies('medici')
 				);
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
@@ -138,8 +138,8 @@ class Iomn_Eventi_Public {
 	public function _renderEventDescription($data) {
 		$html = "";
 	  $html .= "<div>" .$data['quando'] . "</div>\n";
-	  $html .= "<div style=\"margin-top: 1em; margin-bottom: 1em;\">" . $data['dove'] . "</div>\n";
-	  $html .= "<div style=\"margin-bottom: 1em;\">" . $data['descrizione'] . "</div>\n";
+	  $html .= "<div style=\"margin-top: 1em; margin-bottom: 1em;\">Presso: " . $data['dove'] . "</div>\n";
+	  // $html .= "<div style=\"margin-bottom: 1em;\">" . $data['descrizione'] . "</div>\n";
 		$html .= "<div>\n";
 
 		if ($data['gentot'] + $data['tnfptot'] + $data['medtot'] > 0) {
