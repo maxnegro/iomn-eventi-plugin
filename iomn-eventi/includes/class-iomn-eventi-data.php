@@ -221,6 +221,9 @@ class Iomn_Eventi_Data {
   }
 
   public function subscribe($user_id, $specialty) {
+    if ($this->vacancies($specialty) <= 0) {
+      return false;
+    }
     global $wpdb;
     $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
 
