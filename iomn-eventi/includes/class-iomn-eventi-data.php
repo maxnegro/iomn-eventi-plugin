@@ -217,7 +217,7 @@ class Iomn_Eventi_Data {
     global $wpdb;
     $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
 
-    $retval = $wpdb->query($wpdb->prepare("INSERT INTO {$table_name} (id_evento, id_user, specialty) VALUES (%d, %d, %s)", $this->post_id, $user_id, $specialty));
+    $retval = $wpdb->query($wpdb->prepare("INSERT INTO {$table_name} (id_evento, id_user, specialty, time) VALUES (%d, %d, %s, now())", $this->post_id, $user_id, $specialty));
     return $retval;
   }
 
