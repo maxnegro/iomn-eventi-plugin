@@ -78,10 +78,33 @@ get_header(); ?>
 			<?php
 			$user = wp_get_current_user();
 			if ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
+				$sptext = "";
+				$spcode = "";
+				if ($evdata->vacancies($user->get('specialty')) > 0) {
+					switch ($user->get('specialty')) {
+						case 'medici':
+							$sptext = 'medico';
+							$spcode = 'medici';
+							break;
+
+						case 'tnfp':
+							$sptext = 'TNFP';
+							$spcode = 'tnfp';
+							break;
+
+						default:
+						  // Non dovrebbe mai succedere. Lo metto per consentire debug.
+							$sptext = 'Sconosciuto';
+							break;
+					}
+				} else {
+					$sptext = 'generico';
+					$spcode = 'generici';
+				}
 				?>
 				<button id="iomn_button_reserve_med" style="float: right;" class="btn btn-success" onclick="{
-					jQuery('#modalTitle').html('Prenotazione TNFP');
-					jQuery('#ajaxcontacttype').val('tnfp');
+					jQuery('#modalTitle').html('Prenotazione per studente <?php echo $sptext; ?>');
+					jQuery('#ajaxcontacttype').val('<?php echo $spcode; ?>');
 					jQuery('#ajaxcontact-form').show();
 					jQuery('#ajaxSubmit').show();
 					jQuery('#ajaxcontact-response').html('');
@@ -99,6 +122,9 @@ get_header(); ?>
 					<div id="modalBody" class="modal-body">
 						<div id="ajaxcontact-response" style="background-color:#E6E6FA ;color:blue;"></div>
 						<div id="ajaxcontact-form">
+							Fai clic su "Prenota" per confermare la tua partecipazione a <?php the_title(); ?>. Riceverai conferma
+							sulla mail collegata al tuo profilo e potrai controllare lo stato delle tue prenotazioni nella pagina
+							riassuntiva, accessibile dal menu in alto.
 							<form id="iomn-ajax-form" action="" method="post" enctype="multipart/form-data">
 								<input id="ajaxcontacttype" type="hidden" name="ajaxcontacttype" value="">
 								<div id="ajaxcontact-text">
