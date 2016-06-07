@@ -36,11 +36,6 @@ class Iomn_Eventi_Data {
   *      facility
   *    ..n => array
   *      see above
-  *  who => array
-  *    type1 => array
-  *      0 => attendant
-  *      ..n => attendant
-  *    ..typen => array
   *  seats => array
   *    type1 => int
   *    ..typen => int
@@ -59,7 +54,6 @@ class Iomn_Eventi_Data {
   public function __construct( $post_id = NULL) {
     $this->event = array(
       'when' => array(),
-      'who' => array(),
       'seats' => array()
     );
     $this->post_id = NULL;
@@ -203,10 +197,6 @@ class Iomn_Eventi_Data {
     $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
     $res = $wpdb->get_row($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} WHERE id_evento=%d AND specialty=%s", $this->post_id, $type), ARRAY_N);
     return $res[0];
-    // if (defined($this->event['who'] && defined($this->event['who'][$type]))) {
-    //   return count($this->event['who'][$type]);
-    // }
-    // return 0;
   }
 
   public function seats( $type ) {
