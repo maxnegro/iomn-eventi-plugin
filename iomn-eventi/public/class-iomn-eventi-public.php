@@ -59,8 +59,12 @@ class Iomn_Eventi_Public {
 	public function init() {
 		add_feed('iomn-eventi-json', array($this, 'json_feed'));
 		add_shortcode('iomn-calendar', array($this, 'fullcalendar_shortcode'));
-		// add_filter('the_content', array($this, 'single_post_filter'));
 		add_filter('single_template', array($this, 'get_single_iomn_eventi_template'));
+
+		// Reserve form ajax function
+		// add_action( 'wp_ajax_nopriv_ajaxreserve_send_mail', array($this, 'iomn_reserve_ajax') );
+		add_action( 'wp_ajax_ajaxreserve_send_mail', array($this, 'iomn_reserve_ajax') );
+
 	}
 
   public function get_single_iomn_eventi_template($single_template) {
@@ -216,4 +220,73 @@ class Iomn_Eventi_Public {
     wp_enqueue_script('iomn-fullcalendar-it-js', plugin_dir_url( __FILE__ ) . 'js/fullcalendar-it.js', array('iomn-fullcalendar-js'), $this->version, false);
 
 	}
+
+	public function iomn_reserve_ajax() {
+		$user = wp_get_current_user();
+		$post_id = $_POST['acfpostid'];
+		$post = get_post($post_id);
+		$evdata = new Iomn_Eventi_Data($post_id);
+	  $results = '';
+	  $error = 0;
+	  $name = $user->get('first_name') . " " . $user->get('last_name');
+		if (empty($name)) {
+			$name = $user->get('display_name');
+		}
+	  $email = $_POST['acfemail'];
+	  $typedecode = array('medici' => 'medico', 'tnfp' => 'TNFP', 'generici' => 'generico');
+	  $type = $_POST['acftype'];
+		$subject = "Prenotazione attività formativa IOMN";
+	  // $confirmurl = add_query_arg(array("iomnconfirm" => "12345"), home_url());
+	  $contents  = "\n";
+		$contents .= sprintf("Salve %s,\n", $name);
+		$contents .= sprintf("  grazie per aver effettuato la prenotazione per l'evento formativo \"%s\" in qualità di studente %s.\n", $post->post_title, $typedecode[$type]);
+		$contents .= "\n";
+		$contents .= sprintf("Ti ricordiamo che l'evento si terrà nei seguenti giorni ed orari presso %s.\n", $evdata->get_location());
+		$contents .= "\n";
+		for ($i=0; $i<$evdata->sessions(); $i++) {
+			$session = $evdata->get_session($i);
+			$contents .= sprintf("  %s dalle %s alle %s\n", date('d/m/Y', $session['date']), $session['from'], $session['to']);
+		}
+		$contents .= "\n";
+		$contents .= "Grazie ancora e buona giornata.\n";
+		$contents .= "-- \n";
+		$contents .= "Lo staff\n";
+
+	  $admin_email = get_option('admin_email');
+		if ('publish' != get_post_status($post_id)) {
+			$results = "Evento sconosciuto, contattare l'amministratore di sistema.\n";
+			$error = 1;
+		}
+	  // elseif( strlen($name) == 0 )
+	  // {
+	  //   $results = "È necessario compilare il campo \"Nome e cognome\".";
+	  //   $error = 1;
+	  // }
+		elseif ( 'true' != $email) {
+			$results = "Spuntare la casella di verifica dell'indirizzo email per procedere con la prenotazione.";
+			$error = 1;
+		}
+	  elseif (!filter_var($user->get('user_email'), FILTER_VALIDATE_EMAIL))
+	  {
+	    $results = $user->get('user_email')." : indirizzo email non valido, modificarlo nel proprio profilo o contattare la segreteria.";
+	    $error = 1;
+	  }
+
+		$evdata->subscribe($user->ID, $type); // TODO check return value
+
+	  if($error == 0)
+	  {
+	    $headers = 'From:'.$admin_email. "\r\n";
+	    if(wp_mail($user->get('user_email'), $subject, $contents, $headers)) {
+	      $results = "Grazie per la prenotazione. Arriverà una mail all'indirizzo indicato con le istruzioni da seguire per la conferma.";
+	    } else {
+	      $results = "Non è stato possibile inviare la mail di prenotazione.";
+	      $error = 1;
+	    }
+	  }
+	  // Return the String
+	  header( "Content-Type: application/json" );
+	  die(json_encode(array( 'isValid' => $error == 0, 'message' => $results)));
+	}
+
 }

@@ -31,7 +31,7 @@ class Iomn_Eventi_Activator {
 	 */
 	public static function activate() {
 		global $wpdb;
-		$iomn_eventi_db_version = 3.0;
+		$iomn_eventi_db_version = 4.0;
 		$installed_version = get_option('iomn_eventi_db_version');
 		if ( $installed_version != $iomn_eventi_db_version ) {
 			$table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
@@ -40,6 +40,7 @@ class Iomn_Eventi_Activator {
 								time datetime  NOT NULL,
 								id_evento bigint(20) NOT NULL,
 								id_user bigint(20) NOT NULL,
+								specialty VARCHAR(80),
 								UNIQUE KEY id (id)
 			);";
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');

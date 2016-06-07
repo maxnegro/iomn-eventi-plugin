@@ -6,6 +6,12 @@
 * @subpackage Twenty_Sixteen
 * @since Twenty Sixteen 1.0
 */
+function iomn_eventi_single_ajax() {
+	wp_enqueue_script('iomn-eventi-ajax-js', plugin_dir_url( __FILE__ ) . '../public/js/ajaxreserveajax.js', array(), NULL, false);
+	wp_localize_script( 'iomn-eventi-ajax-js', 'iomn_reserve_ajax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+
+}
+add_action('wp_enqueue_scripts', 'iomn_eventi_single_ajax');
 
 get_header(); ?>
 
@@ -75,6 +81,7 @@ get_header(); ?>
 			TNFP: <?php printf('%d/%d', $evdata->vacancies('tnfp'), $evdata->seats('tnfp')); ?>
 			-
 			Generici:  <?php printf('%d/%d', $evdata->vacancies('generici'), $evdata->seats('generici')); ?>
+			<span style="padding-left: 4em;"></span>
 			<?php
 			$user = wp_get_current_user();
 			if ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
@@ -102,7 +109,7 @@ get_header(); ?>
 					$spcode = 'generici';
 				}
 				?>
-				<button id="iomn_button_reserve_med" style="float: right;" class="btn btn-success" onclick="{
+				<button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
 					jQuery('#modalTitle').html('Prenotazione per studente <?php echo $sptext; ?>');
 					jQuery('#ajaxcontacttype').val('<?php echo $spcode; ?>');
 					jQuery('#ajaxcontact-form').show();
@@ -110,6 +117,8 @@ get_header(); ?>
 					jQuery('#ajaxcontact-response').html('');
 					jQuery('#iomnReserveModal').modal();
 				};">Prenota</button>
+			<?php else : ?>
+				<button id="iomn_button_reserve_med" class="btn btn-danger" onclick="return false;">Posti esauriti</button>
 			<?php endif; ?>
 		</div>
 		<div id="iomnReserveModal" class="modal fade">
@@ -122,25 +131,23 @@ get_header(); ?>
 					<div id="modalBody" class="modal-body">
 						<div id="ajaxcontact-response" style="background-color:#E6E6FA ;color:blue;"></div>
 						<div id="ajaxcontact-form">
-							Fai clic su "Prenota" per confermare la tua partecipazione a <?php the_title(); ?>. Riceverai conferma
-							sulla mail collegata al tuo profilo e potrai controllare lo stato delle tue prenotazioni nella pagina
-							riassuntiva, accessibile dal menu in alto.
+							<p>Spunta la casella per confermare la tua email, quindi fai clic su "Prenota"
+							per confermare la tua partecipazione a <?php the_title(); ?>. Riceverai conferma
+							sulla mail indicata e potrai controllare lo stato delle tue prenotazioni nella pagina
+							riassuntiva, accessibile dal menu in alto.</p>
 							<form id="iomn-ajax-form" action="" method="post" enctype="multipart/form-data">
 								<input id="ajaxcontacttype" type="hidden" name="ajaxcontacttype" value="">
 								<div id="ajaxcontact-text">
-									<strong>Nome e cognome </strong> <br/>
-									<input type="text" id="ajaxcontactname" name="ajaxcontactname"/><br />
-									<br/>
-									<strong>Email </strong> <br/>
-									<input type="text" id="ajaxcontactemail" name="ajaxcontactemail"/><br />
+									<strong>Email: <?php echo $user->get('user_email'); ?></strong> <br/>
+									<input type="checkbox" id="ajaxcontactemail" name="ajaxcontactemail"/>&nbsp;<label for="ajaxcontactemail">Conferma indirizzo email</label><br />
 									<br/>
 								</div>
 							</form>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button  style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
-						<a class="btn btn-primary" role="button" id="ajaxSubmit" onclick="ajaxformsendmail(ajaxcontactname.value,ajaxcontactemail.value,ajaxcontacttype.value);">Prenota</a>
+						<button id="ajaxClose" style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+						<a class="btn btn-primary" role="button" id="ajaxSubmit" onclick="ajaxformsendmail(<?php echo $post->ID; ?>,ajaxcontactemail.checked,ajaxcontacttype.value);">Prenota</a>
 					</div>
 				</div>
 			</div>

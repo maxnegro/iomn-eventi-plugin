@@ -22,7 +22,7 @@
             <div id="modalBody" class="modal-body"></div>
             <div class="modal-footer">
                 <button  style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
-                <a class="btn btn-primary" role="button" id="eventUrl" target="_blank">Prenota</a>
+                <a class="btn btn-primary" role="button" id="eventUrl">Vai</a>
             </div>
         </div>
     </div>

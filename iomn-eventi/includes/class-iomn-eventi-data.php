@@ -199,10 +199,14 @@ class Iomn_Eventi_Data {
   }
 
   public function attendees( $type ) {
-    if (defined($this->event['who'] && defined($this->event['who'][$type]))) {
-      return count($this->event['who'][$type]);
-    }
-    return 0;
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
+    $res = $wpdb->get_row($wpdb->prepare("SELECT COUNT(*) FROM {$table_name} WHERE id_evento=%d AND specialty=%s", $this->post_id, $type), ARRAY_N);
+    return $res[0];
+    // if (defined($this->event['who'] && defined($this->event['who'][$type]))) {
+    //   return count($this->event['who'][$type]);
+    // }
+    // return 0;
   }
 
   public function seats( $type ) {
@@ -214,6 +218,14 @@ class Iomn_Eventi_Data {
 
   public function vacancies ( $type ) {
     return $this->seats($type) - $this->attendees ($type);
+  }
+
+  public function subscribe($user_id, $specialty) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
+
+    $retval = $wpdb->query($wpdb->prepare("INSERT INTO {$table_name} (id_evento, id_user, specialty) VALUES (%d, %d, %s)", $this->post_id, $user_id, $specialty));
+    return $retval;
   }
 
 }
