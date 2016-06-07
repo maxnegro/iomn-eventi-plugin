@@ -15,8 +15,7 @@ add_action('wp_enqueue_scripts', 'iomn_eventi_single_ajax');
 
 get_header(); ?>
 
-<div id="primary" class="content-area site-content">
-	<main id="main" class="container site-main" role="main">
+<div id="content" class="site-content"><!-- site main -->
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
@@ -41,7 +40,13 @@ get_header(); ?>
 		// $data['meddispo'] = $prenotazione->disponibili('medici') - $prenotazione->iscritti('medici');
 
 		?>
-		<h1><?php the_title(); ?></h1>
+		<header class="content-header">
+			<div class="container">
+				<h1 class="page-title"><?php the_title(); ?></h1>
+			</div>
+		</header>
+
+		<div class="container">
 		<div class="iomn-container">
 			<ul class="list-group">
 			<?php
@@ -173,8 +178,7 @@ get_header(); ?>
 			// End of the loop.
 		endwhile;
 		?>
-
-	</main><!-- .site-main -->
+	</div><!-- .site-main --> -->
 
 </div><!-- .content-area -->
 
