@@ -13,8 +13,9 @@ function iomn_eventi_single_ajax() {
 }
 add_action('wp_enqueue_scripts', 'iomn_eventi_single_ajax');
 
-get_header(); ?>
+$user = wp_get_current_user();
 
+get_header(); ?>
 <div id="content" class="site-content"><!-- site main -->
 		<?php
 		// Start the loop.
@@ -33,6 +34,7 @@ get_header(); ?>
 		<div class="iomn-container">
 			<ul class="list-group">
 			<?php
+			$inthepast = false;
 			for ($i=0; $i < $evdata->sessions(); $i++) {
 				$session = $evdata->get_session($i);
 				printf('<li class="list-group-item">');
@@ -52,6 +54,9 @@ get_header(); ?>
 				}
 				printf('</li>');
 
+				if (!$inthepast && ($session['date']) < time()) {
+					$inthepast = true;
+				}
 			}
 			?>
 			</ul>
@@ -67,22 +72,30 @@ get_header(); ?>
 
 		</div>
 		<hr />
-		<div>
-			<h4>Posti disponibili</h4>
+		<?php if ($inthepast) : ?>
+			<div class="alert alert-warning">Questo evento è già trascorso, non è più possibile prenotare.</div>
+		<?php elseif ($evdata->reservedby($user->ID)) : ?>
+			<div class="alert alert-success clearfix">Già prenotato a tuo nome.
+				<button id="iomn_button_reserve_med" class="btn btn-warning pull-right" onclick="return false;">Disdici</button>
+			</div>
+		<?php elseif ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') <= 0) :?>
+			<div class="alert alert-danger">Non ci sono posti disponibili per allievi <?php
+				$sptext = array(
+					'medici' => 'medici',
+					'tnfp' => 'TNFP'
+				);
+				echo $sptext[$user->get('specialty')];
+			?>.</div>
+		<?php else : ?>
+		<div class="alert alert-info clearfix" role="alert">
+			<!--
 			Medici: <?php printf('%d/%d', $evdata->vacancies('medici'), $evdata->seats('medici')); ?>
 			-
 			TNFP: <?php printf('%d/%d', $evdata->vacancies('tnfp'), $evdata->seats('tnfp')); ?>
 			-
 			Generici:  <?php printf('%d/%d', $evdata->vacancies('generici'), $evdata->seats('generici')); ?>
-			<span style="padding-left: 4em;"></span>
+		-->
 			<?php
-			$user = wp_get_current_user();
-			if ($evdata->reservedby($user->ID)) :	?>
-				<span class="label label-success">Già prenotato a tuo nome<span style="padding-left: 1em;"></span>
-							<button id="iomn_button_reserve_med" class="btn btn-warning" onclick="return false;">Disdici</button>
-							</span>
-				<?php
-			elseif ($evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici') > 0) :
 				$sptext = "";
 				$spcode = "";
 				if ($evdata->vacancies($user->get('specialty')) > 0) {
@@ -107,6 +120,7 @@ get_header(); ?>
 					$spcode = 'generici';
 				}
 				?>
+				<div class="pull-right">
 				<button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
 					jQuery('#modalTitle').html('Prenotazione per studente <?php echo $sptext; ?>');
 					jQuery('#ajaxcontacttype').val('<?php echo $spcode; ?>');
@@ -115,9 +129,8 @@ get_header(); ?>
 					jQuery('#ajaxcontact-response').html('');
 					jQuery('#iomnReserveModal').modal();
 				};">Prenota</button>
-			<?php else : ?>
-				<button id="iomn_button_reserve_med" class="btn btn-danger" onclick="return false;">Posti esauriti</button>
-			<?php endif; ?>
+			</div>
+				Posti disponibili: <?php echo $evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici'); ?>
 		</div>
 		<div id="iomnReserveModal" class="modal fade">
 			<div class="modal-dialog">
@@ -150,6 +163,7 @@ get_header(); ?>
 				</div>
 			</div>
 		</div>
+		<?php endif; ?>
 		<br />
 		<?php
 		if ( is_singular( 'iomn_eventi' ) ) {
