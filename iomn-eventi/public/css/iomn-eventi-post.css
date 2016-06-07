@@ -11,8 +11,8 @@ and open the template in the editor.
 .iomn-container {
     /* basic styling */
 
-    border: 1px solid #555;
-    border-radius: 20px;
+    /*border: 1px solid #555;
+    border-radius: 20px;*/
     padding: 10px;
     margin: 20px;
 
@@ -21,17 +21,19 @@ and open the template in the editor.
     display: flex;
     -webkit-flex-direction: row;
     flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
 }
 
 .iomn-container > div {
     -webkit-flex: 1 1 auto;
-    flex: 1 1 auto;
+    flex: 1 0 auto;
     /* width: 30px;*/
 }
 
 .iomn-date-detail {
     -webkit-flex: 1 1 70px;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     padding: 12px;
     margin: 5px;
     border: solid darkgrey 3px;

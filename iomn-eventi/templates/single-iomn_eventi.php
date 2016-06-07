@@ -15,8 +15,8 @@ add_action('wp_enqueue_scripts', 'iomn_eventi_single_ajax');
 
 get_header(); ?>
 
-<div id="primary" class="content-area">
-	<main id="main" class="site-main" role="main">
+<div id="primary" class="content-area site-content">
+	<main id="main" class="container site-main" role="main">
 		<?php
 		// Start the loop.
 		while ( have_posts() ) : the_post();
@@ -43,13 +43,11 @@ get_header(); ?>
 		?>
 		<h1><?php the_title(); ?></h1>
 		<div class="iomn-container">
-			<div class="iomn-location-detail"><big>
-				<?php echo $evdata->get_location(); ?>
-			</big></div>
+			<ul class="list-group">
 			<?php
 			for ($i=0; $i < $evdata->sessions(); $i++) {
 				$session = $evdata->get_session($i);
-				printf('<div class="iomn-date-detail">');
+				printf('<li class="list-group-item">');
 				printf('    <div><strong><big>%s</big></strong></div>', date('d/m/Y', $session['date']));
 				printf('    <div>%s-%s</div>', $session['from'], $session['to']);
 				$evtype = "";
@@ -64,14 +62,21 @@ get_header(); ?>
 				if (!empty($session['location'])) {
 					printf('    <div>Sala: <em>%s</em></div>', $session['location']);
 				}
-				printf('</div>');
+				printf('</li>');
 
 			}
 			?>
-		</div>
-		<hr />
-		<div>
-			<?php the_content(); ?>
+			</ul>
+			<div class="iomn-location-detail">
+			Presso: <br />
+			<big>
+				<?php echo $evdata->get_location(); ?>
+			</big>
+			<hr />
+				Ulteriori informazioni:<br />
+				<?php the_content(); ?>
+			</div>
+
 		</div>
 		<hr />
 		<div>
