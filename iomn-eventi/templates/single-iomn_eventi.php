@@ -124,10 +124,10 @@ get_header(); ?>
 		if ( is_singular( 'iomn_eventi' ) ) {
 			// Previous/next post navigation.
 			the_post_navigation( array(
-				'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'twentysixteen' ) . '</span> ' .
+				'next_text' => '<span class="meta-nav" aria-hidden="true">&nbsp;&raquo;</span> ' .
 				'<span class="screen-reader-text">' . __( 'Next post:', 'twentysixteen' ) . '</span> ' .
 				'<span class="post-title">%title</span>',
-				'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'twentysixteen' ) . '</span> ' .
+				'prev_text' => '<span class="meta-nav" aria-hidden="true">&nbsp;&laquo;</span> ' .
 				'<span class="screen-reader-text">' . __( 'Previous post:', 'twentysixteen' ) . '</span> ' .
 				'<span class="post-title">%title</span>',
 				) );
@@ -137,7 +137,7 @@ get_header(); ?>
 		?>
 
 	</main><!-- .site-main -->
-	
+
 </div><!-- .content-area -->
 
 <?php get_footer(); ?>
