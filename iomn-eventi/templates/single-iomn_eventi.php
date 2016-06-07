@@ -18,27 +18,10 @@ get_header(); ?>
 <div id="content" class="site-content"><!-- site main -->
 		<?php
 		// Start the loop.
-		while ( have_posts() ) : the_post();
+		while ( have_posts() ) :
+			the_post();
 
-		// Include the single post content template.
-		// get_template_part( 'template-parts/content', 'single' );
-		$evdata = new Iomn_Eventi_Data($post->ID);
-
-		// $data["pre_data"] = iomn_get_meta('iomn_pre_data');
-		// $data["pre_dalle"] = iomn_get_meta('iomn_pre_dalle');
-		// $data["pre_alle"] = iomn_get_meta('iomn_pre_alle');
-		// $data["pre_sala"] = iomn_get_meta('iomn_pre_sala');
-		// $data["op_data"] = iomn_get_meta('iomn_op_data');
-		// $data["op_dalle"] = iomn_get_meta('iomn_op_dalle');
-		// $data["op_alle"] = iomn_get_meta('iomn_op_alle');
-		// $data["op_sala"] = iomn_get_meta('iomn_op_sala');
-
-		// $prenotazione = new IomnPrenotazione($post->ID);
-		// $data['tnfptot'] = $prenotazione->disponibili('tnfp');
-		// $data['tnfpdispo'] = $prenotazione->disponibili('tnfp') - $prenotazione->iscritti('tnfp');
-		// $data['medtot'] = $prenotazione->disponibili('medici');
-		// $data['meddispo'] = $prenotazione->disponibili('medici') - $prenotazione->iscritti('medici');
-
+			$evdata = new Iomn_Eventi_Data($post->ID);
 		?>
 		<header class="content-header">
 			<div class="container">
