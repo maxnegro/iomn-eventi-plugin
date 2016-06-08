@@ -130,7 +130,7 @@ get_header(); ?>
 				echo $sptext[$user->get('specialty')];
 			?>.</div>
 		<?php else : ?>
-		<div class="alert alert-success clearfix" role="alert">
+		<div class="alert alert-success clearfix">
 			<!--
 			Medici: <?php printf('%d/%d', $evdata->vacancies('medici'), $evdata->seats('medici')); ?>
 			-
