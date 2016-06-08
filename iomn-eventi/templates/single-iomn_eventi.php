@@ -78,7 +78,7 @@ get_header(); ?>
 		<?php if ($inthepast) : ?>
 			<div class="alert alert-warning">Questo evento è già trascorso, non è più possibile prenotare.</div>
 		<?php elseif ($evdata->reservedby($user->ID)) : ?>
-			<div class="alert alert-success clearfix">Già prenotato a tuo nome.
+			<div class="alert alert-warning clearfix">Già prenotato a tuo nome.
 				<button id="iomn_button_reserve_med" class="btn btn-warning pull-right" onclick="{
 					jQuery('#modalTitle').html('Cancella prenotazione');
 					jQuery('#ajaxcontact-form').show();

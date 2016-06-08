@@ -77,6 +77,8 @@ class Iomn_Eventi_Public {
 	}
 
 	public function json_feed() {
+		$user = isset($_POST['userId']) ? get_userdata($_POST['userId']) : false;
+
 		// - grab date barrier -
     $today = strftime('%F %R', strtotime('today 0:00'));
 
@@ -99,20 +101,22 @@ class Iomn_Eventi_Public {
 			// var_dump($mbdata);
 			if ($mbdata->sessions() > 0) {
 				$tdinfo = "";
+				$vacancies = 0;
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
 					$tdinfo .= "<strong>". date('d/m/Y', $ce['date']) . "</strong> " . $ce['from'] . "-" . $ce['to'] . "<br />";
+					if ($ce['date'] < time()) {
+						$vacancies = -1;
+					}
+				}
+				if (($vacancies == 0) && $user) {
+					$vacancies = $mbdata->vacancies($user->get('specialty')) + $mbdata->vacancies('generici');
+					// echo $vacancies . "\n";
 				}
 				$evdata = array(
 					'dove' => $mbdata->get_location(),
 					'quando' => $tdinfo,
-					'descrizione' => $post->post_content,
-					'gentot' => $mbdata->seats('generici'),
-					'gendispo' => $mbdata->vacancies('generici'),
-					'tnfptot' => $mbdata->seats('tnfp'),
-					'tnfpdispo' => $mbdata->vacancies('tnfp'),
-					'medtot' => $mbdata->seats('medici'),
-					'meddispo' => $mbdata->vacancies('medici')
+					'descrizione' => $post->post_content
 				);
 				for ($i = 0; $i < $mbdata->sessions(); $i++) {
 					$ce = $mbdata->get_session($i);
@@ -120,6 +124,15 @@ class Iomn_Eventi_Public {
 					$end = date('Y-m-d', $ce['date']) . 'T' . $ce['to'] . 'Z';
 
 					// - json items -
+					if ($vacancies < 0) {
+						$color = '#999999';
+					} elseif ($mbdata->reservedby($user->ID)) {
+						$color = '#C0A000';
+					} elseif ($vacancies == 0) {
+						$color = '#990000';
+					} else {
+						$color = '#009900';
+					}
 					$jsonevents[] = array(
 							'title' => $post->post_title, // . " (preoperatoria)",
 							'allDay' => false, // <- true by default with FullCalendar
@@ -127,7 +140,9 @@ class Iomn_Eventi_Public {
 							'end' => $end,
 							'url' => get_permalink($post->ID),
 							'description' => $this->_renderEventDescription($evdata),
-							'color' => '#000099'
+							'color' => $color,
+							'vacancies' => $vacancies,
+							'attending' => $mbdata->reservedby($user->ID)
 					);
 				}
 			}
@@ -141,22 +156,21 @@ class Iomn_Eventi_Public {
 	  $html .= "<div>" .$data['quando'] . "</div>\n";
 	  $html .= "<div style=\"margin-top: 1em; margin-bottom: 1em;\">Presso: " . $data['dove'] . "</div>\n";
 	  // $html .= "<div style=\"margin-bottom: 1em;\">" . $data['descrizione'] . "</div>\n";
-		$html .= "<div>\n";
-
-		if ($data['gentot'] + $data['tnfptot'] + $data['medtot'] > 0) {
-			$html .= "Posti disponibili: ";
-		}
-		if ($data['gentot'] > 0) {
-			$html .= sprintf("Generici: %s/%s ", $data['gendispo'], $data['gentot']);
-		}
-		if ($data['tnfptot'] > 0) {
-			$html .= sprintf("TNFP: %s/%s ", $data['tnfpdispo'], $data['tnfptot']);
-		}
-		if ($data['medtot'] > 0) {
-			$html .= sprintf("Medici: %s/%s ", $data['meddispo'], $data['medtot']);
-		}
+		// $html .= "<div>\n";
+		// if ($data['gentot'] + $data['tnfptot'] + $data['medtot'] > 0) {
+		// 	$html .= "Posti disponibili: ";
+		// }
+		// if ($data['gentot'] > 0) {
+		// 	$html .= sprintf("Generici: %s/%s ", $data['gendispo'], $data['gentot']);
+		// }
+		// if ($data['tnfptot'] > 0) {
+		// 	$html .= sprintf("TNFP: %s/%s ", $data['tnfpdispo'], $data['tnfptot']);
+		// }
+		// if ($data['medtot'] > 0) {
+		// 	$html .= sprintf("Medici: %s/%s ", $data['meddispo'], $data['medtot']);
+		// }
 	  // <div>Posti disponibili: TNFP: {$data['tnfpdispo']}/{$data['tnfptot']} Medici: {$data['meddispo']}/{$data['medtot']}</div>
-		$html .= "</div>\n";
+		// $html .= "</div>\n";
 	  return $html;
 	}
 

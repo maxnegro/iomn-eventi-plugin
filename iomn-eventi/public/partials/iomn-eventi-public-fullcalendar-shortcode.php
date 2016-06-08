@@ -17,9 +17,9 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 <h4 id="modalTitle" class="modal-title"></h4>
-                <p><div id="modalBody"></div></p>
             </div>
             <div id="modalBody" class="modal-body"></div>
+            <div id="eventReservation" class="alert alert-default"></div>
             <div class="modal-footer">
                 <button  style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
                 <a class="btn btn-primary" role="button" id="eventUrl">Dettagli</a>
@@ -40,6 +40,19 @@
                     jQuery('#modalTitle').html(event.title);
                     jQuery('#modalBody').html(event.description);
                     jQuery('#eventUrl').attr('href',event.url);
+                    if (event.attending) {
+                      jQuery('#eventReservation').attr('class', 'alert alert-warning');
+                      jQuery('#eventReservation').html('Hai già prenotato questo evento.')
+                    } else if (event.vacancies < 0) {
+                      jQuery('#eventReservation').attr('class', 'alert alert-warning');
+                      jQuery('#eventReservation').html('Evento già trascorso, impossibile prenotare.')
+                    } else if (event.vacancies == 0) {
+                      jQuery('#eventReservation').attr('class', 'alert alert-danger');
+                      jQuery('#eventReservation').html('Non ci sono posti disponibili per questo evento.')
+                    } else {
+                      jQuery('#eventReservation').attr('class', 'alert alert-success');
+                      jQuery('#eventReservation').html('Posti disponibili: <span class="label label-success">'+event.vacancies+'</span>');
+                    }
                     jQuery('#fullCalModal').modal();
                 });
                 element.tooltip({
@@ -49,6 +62,10 @@
             eventSources: [
                 {
                     url: '<?php echo get_feed_link('iomn-eventi-json'); ?>',
+                    type: 'POST',
+                    data: {
+                      userId: '<?php $user=wp_get_current_user(); echo $user->ID; ?>'
+                    },
                     error: function() {
                         alert('there was an error while fetching events!');
                     },
