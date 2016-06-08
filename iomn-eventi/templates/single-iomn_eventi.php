@@ -130,7 +130,7 @@ get_header(); ?>
 				echo $sptext[$user->get('specialty')];
 			?>.</div>
 		<?php else : ?>
-		<div class="alert alert-info clearfix" role="alert">
+		<div class="alert alert-success clearfix" role="alert">
 			<!--
 			Medici: <?php printf('%d/%d', $evdata->vacancies('medici'), $evdata->seats('medici')); ?>
 			-
@@ -163,8 +163,7 @@ get_header(); ?>
 					$spcode = 'generici';
 				}
 				?>
-				<div class="pull-right">
-				<button id="iomn_button_reserve_med" class="btn btn-success" onclick="{
+				<button id="iomn_button_reserve_med" class="btn btn-success pull-right" onclick="{
 					jQuery('#modalTitle').html('Prenotazione per studente <?php echo $sptext; ?>');
 					jQuery('#ajaxcontacttype').val('<?php echo $spcode; ?>');
 					jQuery('#ajaxcontact-form').show();
@@ -172,8 +171,7 @@ get_header(); ?>
 					jQuery('#ajaxcontact-response').html('');
 					jQuery('#iomnReserveModal').modal();
 				};">Prenota</button>
-			</div>
-				Posti disponibili: <?php echo $evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici'); ?>
+				Posti disponibili: <span class="label label-success"><?php echo $evdata->vacancies($user->get('specialty')) + $evdata->vacancies('generici'); ?></span>
 		</div>
 		<div id="iomnReserveModal" class="modal fade">
 			<div class="modal-dialog">
