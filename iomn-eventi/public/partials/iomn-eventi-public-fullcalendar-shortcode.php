@@ -31,7 +31,7 @@
 <script>
     jQuery(document).ready(function () {
         jQuery("#iomn_calendar").fullCalendar({
-            contentHeight: 700,
+            // contentHeight: 700,
             lang: 'it',
             theme: false,
             eventRender: function (event, element) {

@@ -2,3 +2,12 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+.fc-view table {
+  border-bottom: 0px !important;
+  margin: 0px !important;
+}
+
+.fc-view td {
+  border-top: 0 !important;
+  padding: 0 !important;
+}
