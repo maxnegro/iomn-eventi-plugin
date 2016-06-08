@@ -64,6 +64,7 @@ class Iomn_Eventi_Public {
 		// Reserve form ajax function
 		// add_action( 'wp_ajax_nopriv_ajaxreserve_send_mail', array($this, 'iomn_reserve_ajax') );
 		add_action( 'wp_ajax_ajaxreserve_send_mail', array($this, 'iomn_reserve_ajax') );
+		add_action( 'wp_ajax_ajaxcancel', array($this, 'iomn_cancel_ajax') );
 
 	}
 
@@ -278,9 +279,77 @@ class Iomn_Eventi_Public {
 	  {
 	    $headers = 'From:'.$admin_email. "\r\n";
 	    if(wp_mail($user->get('user_email'), $subject, $contents, $headers)) {
-	      $results = "Grazie per la prenotazione. Arriverà una mail all'indirizzo indicato con le istruzioni da seguire per la conferma.";
+	      $results = "Grazie per la prenotazione. Arriverà una mail all'indirizzo indicato con la conferma dell'avvenuta prenotazione. Non sono necessarie altre azioni da parte tua.";
 	    } else {
 	      $results = "Non è stato possibile inviare la mail di prenotazione.";
+	      $error = 1;
+	    }
+	  }
+	  // Return the String
+	  header( "Content-Type: application/json" );
+	  die(json_encode(array( 'isValid' => $error == 0, 'message' => $results)));
+	}
+
+	public function iomn_cancel_ajax() {
+		$user = wp_get_current_user();
+		$post_id = $_POST['acfpostid'];
+		$post = get_post($post_id);
+		$evdata = new Iomn_Eventi_Data($post_id);
+	  $results = '';
+	  $error = 0;
+	  $name = $user->get('first_name') . " " . $user->get('last_name');
+		if (empty($name)) {
+			$name = $user->get('display_name');
+		}
+	  $check = $_POST['acfcheck'];
+		$notes = $_POST['acfnotes'];
+		$subject = "Cancellazione prenotazione attività formativa IOMN";
+	  // $confirmurl = add_query_arg(array("iomnconfirm" => "12345"), home_url());
+	  $contents  = "\n";
+		$contents .= sprintf("Salve %s,\n", $name);
+		$contents .= sprintf("  ti inviamo questo messaggio per confermare l'avvenuta disdetta della prenotazione per l'evento formativo \"%s\".\n", $post->post_title);
+		$contents .= "\n";
+		$contents .= sprintf("Hai accompagnato la disdetta con queste note:\n%s\n", $notes);
+		$contents .= "----------\n\n";
+		$contents .= "La disdetta è definitiva e non è necessaria altra attività da parte tua. Tuttavia se ritieni che questo messaggio ti sia arrivato per errore ti invitiamo a contattare immediatamente la segreteria della scuola.\n";
+		$contents .= "\n";
+		$contents .= "Grazie ancora e buona giornata.\n";
+		$contents .= "-- \n";
+		$contents .= "Lo staff\n";
+
+	  $admin_email = get_option('admin_email');
+		if ('publish' != get_post_status($post_id)) {
+			$results = "Evento sconosciuto, contattare l'amministratore di sistema.\n";
+			$error = 1;
+		}
+	  // elseif( strlen($name) == 0 )
+	  // {
+	  //   $results = "È necessario compilare il campo \"Nome e cognome\".";
+	  //   $error = 1;
+	  // }
+		elseif ( 'true' != $check) {
+			$results = "Spuntare la casella di verifica per procedere con la cancellazione.";
+			$error = 1;
+		}
+		elseif (empty($notes)) {
+			$results = "Compilare il campo Note con le ragioni della cancellazione.";
+			$error = 1;
+		}
+	  elseif (!filter_var($user->get('user_email'), FILTER_VALIDATE_EMAIL))
+	  {
+	    $results = $user->get('user_email')." : indirizzo email non valido, modificarlo nel proprio profilo o contattare la segreteria.";
+	    $error = 1;
+	  }
+
+		$evdata->unsubscribe($user->ID, $type); // TODO check return value
+
+	  if($error == 0)
+	  {
+	    $headers = 'From:'.$admin_email. "\r\n";
+	    if(wp_mail($user->get('user_email'), $subject, $contents, $headers)) {
+	      $results = "Grazie per la comunicazione. Arriverà una mail all'indirizzo indicato con la conferma di avvenuta cancellazione della prenotazione.";
+	    } else {
+	      $results = "Non è stato possibile inviare la mail di conferma.";
 	      $error = 1;
 	    }
 	  }

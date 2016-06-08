@@ -221,6 +221,14 @@ class Iomn_Eventi_Data {
     return $retval;
   }
 
+  public function unsubscribe($user_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
+
+    $retval = $wpdb->query($wpdb->prepare("DELETE FROM {$table_name} WHERE id_evento = %d AND id_user = %d", $this->post_id, $user_id));
+    return $retval;
+  }
+
   public function reservedby ($user_id) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'iomn_eventi_prenotazioni';
