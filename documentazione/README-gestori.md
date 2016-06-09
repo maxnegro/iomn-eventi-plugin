@@ -6,7 +6,7 @@ La console
 
 Una volta effettuato il login, dall'indirizzo http://iomn.photomarketing.it/wp-admin/ , si accede alla console di amministrazione del sito.
 
-![](immagini/Bacheca ‹ IOMN Emilia Romagna — WordPress - Google Chrome_021.png)
+![](immagini/finestra_021.png)
 
 L'aspetto della console è personalizzabile, quindi le immagini sono solamente indicative, ma le funzionalità abilitate sono le stesse per tutti i gestori. L'accesso alla console per l'inserimento e la gestione di eventi ed utenti è possibile solamente agli utenti che hanno un privilegio pari a "Gestore" o "Amministratore". L'utente utilizzato in questo esempio ha privilegi di "Gestore", così da non complicare inutilmente le schermate presentate con tutte le opzioni a disposizione dell'amministratore del sito (possibilità di modificare la grafica, installare o rimuovere funzionalità, ecc...).
 
@@ -21,7 +21,7 @@ La creazione di nuovi utenti per gli allievi, la modifica dei loro dati e la lor
 
 Facendo click nella barra di sinistra sulla voce "Utenti" si aprirà un sotto-menu con le opzioni disponibili ed apparirà la lista degli utenti presenti sul sito. Qualora il loro numero sia elevato, verrà presentata soltanto una lista parziale, consultabile per pagine.
 
-![Lista utenti](immagini/Utenti ‹ IOMN Emilia Romagna — WordPress - Google Chrome_022.png)
+![Lista utenti](immagini/finestra_022.png)
 
 Le operazioni possibili sono diverse, così come le strade possibili per la loro esecuzione ed in linea di massima dovrebbero essere facilmente comprensibili seguendo le istruzioni a schermo. Di seguito ci concentreremo sulle operazioni essenziali per la manutenzione ordinaria.
 
@@ -29,7 +29,7 @@ Le operazioni possibili sono diverse, così come le strade possibili per la loro
 
 Facendo click a sinistra nella barra sulla voce "Aggiungi nuovo" oppure sul'omonimo bottone in alto sopra la lista utenti si raggiunge la pagina di creazione di un nuovo utente.
 
-![Nuovo utente](immagini/Aggiungi nuovo utente ‹ IOMN Emilia Romagna — WordPress - Google Chrome_024.png)
+![Nuovo utente](immagini/finestra_024.png)
 
 I campi richiesti, qui compilati a titolo esemplificativo, non dovrebbero richiedere una spiegazione particolare. Nell'immagine, i parametri cui prestare particolare attenzione sono evidenziati da una grossa freccia verde.
 
@@ -49,7 +49,7 @@ Una volta compilate tutte le informazioni, fare click sul pulsante "Aggiungi nuo
 
 Qualora si presentasse la necessità di modificare i dati relativi ad un utente, ad esempio per modificare il suo indirizzo di posta elettronica, la sua specialità o altro, è possibile cliccare sul suo "Nome utente" nella lista. Si aprirà una pagina molto simile a quella utilizzata per l'inserimento, per la quale valgono le medesime considerazioni.
 
-![Modifica utente](immagini/Modifica utente ‹ IOMN Emilia Romagna — WordPress - Google Chrome_025.png)
+![Modifica utente](immagini/finestra_025.png)
 
 Una volta terminate le modifiche necessarie, scorrere fino in fondo alla pagina e fare clic sul pulsante "Aggiorna utente".
 
@@ -59,7 +59,7 @@ Una volta terminate le modifiche necessarie, scorrere fino in fondo alla pagina 
 
 Per rimuovere un utente dalla lista degli autorizzati all'accesso, il procedimento più veloce consiste nell'avvicinare il cursore del mouse al nome da cancellare. Immediatamente appariranno altre voci selezionabili tra cui, in rosso, "Cancella".
 
-![Cancellazione utente](immagini/Utenti ‹ IOMN Emilia Romagna — WordPress - Google Chrome_026.png)
+![Cancellazione utente](immagini/finestra_026.png)
 
 Facendo clic sulla scritta "Cancella" ci si troverà su una pagina di conferma, nella quale occorrerà fare click sul bottone "Conferma cancellazione". A questo punto l'utente non sarà più presente nella lista e tutte le sue prenotazioni saranno invalidate. Anche ricreandolo di nuovo con lo stesso nome utente e la stessa password non sarà possibile recuperarle.
 
@@ -68,7 +68,7 @@ Gestione prenotazioni
 
 Selezionando la voce "Eventi IOMN" nella colonna di sinistra si avrà accesso alla lista degli eventi in programma, oltre a scoprire un sotto-menu per la gestione delle attività.
 
-![Lista eventi](immagini/Eventi ‹ IOMN Emilia Romagna — WordPress - Google Chrome_027.png)
+![Lista eventi](immagini/finestra_027.png)
 
 Per ogni evento vengono visualizzate le date in cui sono programmate le attività didattiche, l'ospedale presso cui verrà svolta la formazione ed il numero di prenotazioni registrate fino all'istante in cui si è caricata la pagina, divise per specialità.
 
@@ -76,13 +76,13 @@ Per ogni evento vengono visualizzate le date in cui sono programmate le attivit�
 
 Per aprire la pagina di inserimento di un nuovo evento selezionare la voce "Nuovo" nella barra di sinistra oppure il pulsante "Nuovo" sopra la lista degli eventi.
 
-![Nuovo evento](immagini/Nuovo Evento ‹ IOMN Emilia Romagna — WordPress - Google Chrome_028.png)
+![Nuovo evento](immagini/finestra_028.png)
 
 Compilare le informazioni relative all'attività inserendo il titolo che verrà mostrato nella visualizzazione del calendario, la descrizione estesa che sarà leggibile nella pagina con i dettagli, la data e l'ora di inizio e fine del primo appuntamento ed eventualmente la sala (sala operatoria, ambulatorio, ufficio, ecc...) in cui avverrà l'incontro.
 
 Qualora l'evento di formazione sia organizzato su più giornate, dopo aver inserito i dettagli della prima fare click sul pulsante "Aggiungi nuovo". Apparirà una nuova riga, vuota, sotto la precendente, dove proseguire con l'inserimento delle informazioni. Al momento non è previsto un controllo sul numero di giornate che è possibile inserire, ma per questioni di leggibilità si raccomanda di non superare le tre righe.
 
-![Compilazione dati nuovo evento](immagini/Nuovo Evento ‹ IOMN Emilia Romagna — WordPress - Google Chrome_030.png)
+![Compilazione dati nuovo evento](immagini/finestra_030.png)
 
 Terminato l'inserimento delle date, specificare presso quale ospedale verrà svolta la formazione ed indicare la disponibilità di posti prenotabili per specialità. I posti indicati alla voce "Medici" saranno disponibili soltanto per gli utenti che avranno la voce "Specialità" del loro profilo impostata sul valore "Medico". Similmente, la voce "TNFP" indicherà i posti a disposizione per la relativa tipologia di utenti, mentre ai posti indicati come "Generici" potranno accedere entrambe le tipologie di allievi.
 
