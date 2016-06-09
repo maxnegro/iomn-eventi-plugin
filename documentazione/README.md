@@ -11,9 +11,7 @@ Sarà necessario seguire il primo collegamento proposto, quello con l'indirizzo 
 
 ![](immagini/Selezione_016.png)
 
-Si può decidere di accettare quella suggerita dal sistema, che viene presentata nella casella "Nuova password", oppure inserire al suo posto una di proprio gradimento. Il sistema fornisce una valutazione della robustezza della parola chiave, si raccomanda di sceglierne una abbastanza forte.
-
-Facendo clic sul pulsante "Reimposta password" si memorizza la parola chiave che andrà utilizzata per i prossimi accessi. Il sistema mostrerà una pagina di conferma ed invierà una mail all'indirizzo memorizzato con la comunicazione dell'avvenuta impostazione della password.
+Si può decidere di accettare quella suggerita dal sistema, che viene presentata nella casella "Nuova password", oppure inserire al suo posto una di proprio gradimento. Il sistema fornisce una valutazione della robustezza della parola chiave, si raccomanda di sceglierne una abbastanza forte. Facendo clic sul pulsante "Reimposta password" si memorizza la parola chiave che andrà utilizzata per i prossimi accessi. Il sistema mostrerà una pagina di conferma ed invierà una mail all'indirizzo memorizzato con la comunicazione dell'avvenuta impostazione della password.
 
 ![](immagini/Selezione_017.png)
 
@@ -21,9 +19,7 @@ Facendo clic su "Accedi" si finirà nella console di amministrazione del proprio
 
 ![](immagini/Profilo ‹ IOMN Emilia Romagna — WordPress - Google Chrome_018.png)
 
-Da qui si può modificare lo schema colore della console amministrativa e si possono verificare i propri dati personali. Si prega di prestare la massima attenzione alle eventuali modifiche che si deciderà di apportare rispetto ai dati inseriti dalla Segreteria poiché questo potrebbe pregiudicare il corretto funzionamento delle procedure di visualizzazione e prenotazione delle attività formative.
-
-Facendo clic in alto a sinistra su "IOMN Emilia Romagna" si verrà condotti alla pagina principale del sito, con la visualizzazione del calendario.
+Da qui si può modificare lo schema colore della console amministrativa e si possono verificare i propri dati personali. Si prega di prestare la massima attenzione alle eventuali modifiche che si deciderà di apportare rispetto ai dati inseriti dalla Segreteria poiché questo potrebbe pregiudicare il corretto funzionamento delle procedure di visualizzazione e prenotazione delle attività formative. Facendo clic in alto a sinistra su "IOMN Emilia Romagna" si verrà condotti alla pagina principale del sito, con la visualizzazione del calendario.
 
 Sezione utente
 ==============
@@ -106,20 +102,4 @@ Spuntando la casella "Conferma indirizzo email" e facendo click sul bottone "Pre
 Disdetta della prenotazione
 ---------------------------
 
-Nel malaugurato caso in cui sia necessario disdire la propria presenza per uno degli eventi prenotati in precedenza, occorre selezionarlo dal calendario e portarsi sulla pagina di dettaglio. Qui, nella riga colorata in basso, si troverà il pulsante "Disdici", cliccando il quale si aprirà una finestra di conferma.
-
-![](immagini/Selezione_013.png)
-
-Nella finestra è necessario spuntare la casella di conferma ed inserire una nota relativa alla motivazione che ha portato alla disdetta. Facendo click su "Disdici", verrà inviato un messaggio di conferma all'indirizzo email indicato ed il posto prenotato tornerà nuovamente nella disponibilità degli altri partecipanti.
-
-Sezione amministrativa
-======================
-
-La console
-----------
-
-Una volta effettuato il login, dall'indirizzo http://iomn.photomarketing.it/wp-admin/ , si accede alla console di amministrazione del sito.
-
-![](immagini/Bacheca ‹ IOMN Emilia Romagna — WordPress - Google Chrome_021.png)
-
-L'aspetto della console è personalizzabile, quindi le immagini sono solamente indicative, ma le funzionalità abilitate sono le stesse per tutti i gestori. L'accesso alla console per l'inserimento e la gestione di eventi ed utenti è possibile solamente agli utenti che hanno un privilegio pari a "Gestore" o "Amministratore". L'utente utilizzato
+Nel malaugurato caso in cui sia necessario disdire la propria presenza per uno degli eventi prenotati in precedenza, occorre selezionarlo dal calendario e portarsi sulla pagina di dettaglio. Qui, nella riga colorata in basso, si troverà il pulsante "Disdici", cliccando il quale si aprirà una finestra di conferma. ![](immagini/Selezione_013.png) Nella finestra è necessario spuntare la casella di conferma ed inserire una nota relativa alla motivazione che ha portato alla disdetta. Facendo click su "Disdici", verrà inviato un messaggio di conferma all'indirizzo email indicato ed il posto prenotato tornerà nuovamente nella disponibilità degli altri partecipanti.
