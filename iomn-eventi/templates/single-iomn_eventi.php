@@ -221,7 +221,7 @@ get_header(); ?>
 			// End of the loop.
 		endwhile;
 		?>
-	</div><!-- .site-main --> -->
+	</div><!-- .site-main -->
 
 </div><!-- .content-area -->
 
