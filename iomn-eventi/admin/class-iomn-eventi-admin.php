@@ -210,10 +210,59 @@ class Iomn_Eventi_Admin
 	}
 
 	public function render_prenotazioni() {
+		global $wpdb;
 		$list = new Iomn_Eventi_Admin_Prenotazioni_List();
+		if ('confirmdelete' == $list->current_action()) {
+			if (wp_verify_nonce($_REQUEST['_confirm_delete_nonce'], 'delete')) {
+				$wpdb->delete(
+					$wpdb->prefix . "iomn_eventi_prenotazioni",
+					array( "ID" => $_REQUEST['reservation']),
+					array( "%d" )
+				);
+				// TODO: inviare mail di notifica ad utente ed amministratori
+			}
+			wp_redirect( home_url('wp-admin/edit.php?post_type=iomn_eventi&page=prenotazioni') , 301);
+			exit();
+		}
 		echo '<div class="wrap"><h1>Prenotazioni</h1>';
-		// $this->prepare_items();
-		$list->display();
+		if ('delete' == $list->current_action()) {
+			$data = $wpdb->get_results($wpdb->prepare(
+				"SELECT r.ID AS ID, r.time AS resdate, r.specialty AS specialty, p.ID AS postID, r.id_user AS userID, ".
+				"       p.post_title AS evento, u.user_email AS email, CONCAT(um1.meta_value, ' ', um2.meta_value) AS name, pm.meta_value AS evstartdate ".
+				" FROM wp_iomn_eventi_prenotazioni AS r ".
+				" INNER JOIN wp_posts AS p ON r.id_evento = p.ID ".
+				" INNER JOIN wp_users AS u ON r.id_user = u.ID ".
+				" INNER JOIN wp_postmeta AS pm ON p.ID = pm.post_id AND pm.meta_key = 'iomn_eventi_data_sort' ".
+				" INNER JOIN wp_usermeta AS um1 ON u.ID = um1.user_id AND um1.meta_key = 'first_name' ".
+				" INNER JOIN wp_usermeta AS um2 ON u.ID = um2.user_id AND um2.meta_key = 'last_name' ".
+				" WHERE r.id = %d ",
+				$_REQUEST['reservation']
+			),
+			ARRAY_A);
+			if (count($data) > 0) {
+				echo "<p>È stata richiesta la cancellazione della prenotazione:</p>\n";
+				printf("<blockquote>");
+				printf("Prenotazione effettuata da <b>%s</b> il %s ", $data[0]['name'], $data[0]['resdate']);
+				printf("per l'evento <b>\"%s\"</b> in programma dal giorno %s.\n", $data[0]['evento'], date('d/m/Y', $data[0]['evstartdate']));
+				printf("</blockquote>");
+				printf("<form action=%s method=\"GET\">", 'edit.php');
+				printf('<input type="hidden" name="%s" value="%s">', 'post_type', 'iomn_eventi');
+				printf('<input type="hidden" name="%s" value="%s">', 'page', 'prenotazioni');
+				printf('<input type="hidden" name="%s" value="%s">', 'action', 'confirmdelete');
+				printf('<input type="hidden" name="%s" value="%s">', 'noheader', 'true');
+				wp_nonce_field( 'delete', '_confirm_delete_nonce', false, true );
+				printf('<input type="hidden" name="%s" value="%s">', 'reservation', $data[0]['ID']);
+				printf('<input type="submit" name="submit" id="submit" class="button button-primary" value="Conferma cancellazione">');
+				printf("</form>");
+				printf("<p><b>ATTENZIONE</b>: la cancellazione è definitiva. Una volta confermata non sarà più possibile recuperarla. Sarà inviata una mail di notifica all'indirizzo %s</p>", $data[0]['email']);
+			} else {
+				echo "È stata richiesta la cancellazione di una prenotazione non esistente. L'operazione non può essere completata.";
+			}
+
+		}  else {
+			$list->prepare_items();
+			$list->display();
+		}
 		echo '</div>';
 		return true;
 	}
