@@ -112,7 +112,7 @@ get_header(); ?>
 		</div>
 		<hr />
 		<?php if ($inthepast) : ?>
-			<div class="alert alert-warning">Questo evento è già trascorso, non è più possibile prenotare.</div>
+			<div class="alert alert-info">Questo evento è già trascorso, non è più possibile prenotare.</div>
 		<?php elseif ($evdata->reservedby($user->ID)) : ?>
 			<div class="alert alert-warning clearfix">Già prenotato a tuo nome.
 				<button id="iomn_button_reserve_med" class="btn btn-warning pull-right" onclick="{

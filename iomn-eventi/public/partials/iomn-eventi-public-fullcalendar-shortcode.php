@@ -19,7 +19,7 @@
                 <h4 id="modalTitle" class="modal-title"></h4>
             </div>
             <div id="modalBody" class="modal-body"></div>
-            <div id="eventReservation" class="alert alert-default"></div>
+            <div id="eventReservation" class="alert alert-info"></div>
             <div class="modal-footer">
                 <button  style="width: initial; " type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
                 <a class="btn btn-primary" role="button" id="eventUrl">Dettagli</a>
@@ -44,7 +44,7 @@
                       jQuery('#eventReservation').attr('class', 'alert alert-warning');
                       jQuery('#eventReservation').html('Hai già prenotato questo evento.')
                     } else if (event.vacancies < 0) {
-                      jQuery('#eventReservation').attr('class', 'alert alert-warning');
+                      jQuery('#eventReservation').attr('class', 'alert alert-info');
                       jQuery('#eventReservation').html('Evento già trascorso, impossibile prenotare.')
                     } else if (event.vacancies == 0) {
                       jQuery('#eventReservation').attr('class', 'alert alert-danger');
