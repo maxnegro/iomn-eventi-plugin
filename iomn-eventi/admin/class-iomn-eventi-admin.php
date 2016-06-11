@@ -213,7 +213,7 @@ class Iomn_Eventi_Admin
 		global $wpdb;
 		$list = new Iomn_Eventi_Admin_Prenotazioni_List();
 		if ('confirmdelete' == $list->current_action()) {
-			if (wp_verify_nonce($_REQUEST['_confirm_delete_nonce'], 'delete')) {
+			if (current_user_can('edit_posts') && wp_verify_nonce($_REQUEST['_confirm_delete_nonce'], 'delete')) {
 				$wpdb->delete(
 					$wpdb->prefix . "iomn_eventi_prenotazioni",
 					array( "ID" => $_REQUEST['reservation']),
