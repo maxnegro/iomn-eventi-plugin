@@ -89,6 +89,14 @@ class Iomn_Eventi_Data {
   public function save_data() {
     if (!empty($this->post_id)) {
       $retcode = update_post_meta( $this->post_id, 'iomn_eventi_data', $this->event );
+      $sortValue = 0;
+      for ($i=0; $i < $this->sessions(); $i++) {
+        $sess = $this->get_session($i);
+        if (($sortValue == 0) || ($sortValue > $sess['date'])) {
+          $sortValue = $sess['date'];
+        }
+      }
+      update_post_meta($this->post_id, 'iomn_eventi_data_sort', $sortValue);
       wp_set_object_terms($this->post_id, $this->where ,'iomn_strutture');
     } else {
       return false;
@@ -103,7 +111,7 @@ class Iomn_Eventi_Data {
     return;
     if (!isset($_POST['iomn_eventi_nonce']) || !wp_verify_nonce($_POST['iomn_eventi_nonce'], '_iomn_eventi_nonce'))
     return;
-    if (!current_user_can('edit_post', $post_id))
+    if (!current_user_can('edit_post', $this->post_id))
     return;
 
     if (isset($_POST['iomn_dove'])) {
@@ -130,7 +138,7 @@ class Iomn_Eventi_Data {
           'to' => NULL,
           'location' => NULL
         );
-        $date_timestamp = DateTime::createFromFormat('d/m/Y', $_POST['iomn_ev_data'][$i]);
+        $date_timestamp = DateTime::createFromFormat('!d/m/Y', $_POST['iomn_ev_data'][$i]);
         if (is_object($date_timestamp)) {
           $this->event['when'][$i]['date']=$date_timestamp->getTimeStamp();
         }

@@ -185,7 +185,21 @@ class Iomn_Eventi {
 	//        ),
 			));
 
+			/**
+			 * Add default sort order for events
+			 */
+			add_filter('parse_query', array($this, 'post_sort'));
+
 		}
+
+		public function post_sort($query) {
+				if (!is_admin() && isset($query->query_vars) && array_key_exists('post_type', $query->query_vars) && $query->query_vars['post_type'] == 'iomn_eventi') {
+						$query->query_vars['orderby'] = 'meta_value';
+						$query->query_vars['meta_key'] = 'iomn_eventi_data_sort';
+						$query->query_vars['order'] = 'ASC';
+				}
+		}
+
 
 	/**
 	 * Define the locale for this plugin for internationalization.

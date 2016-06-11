@@ -51,27 +51,9 @@ class Iomn_Eventi_Admin
 		$this->load_dependencies(	$this->plugin_name, $this->version );
 		add_filter('manage_iomn_eventi_posts_columns', array($this, 'add_iomn_eventi_columns'));
 		add_action('manage_iomn_eventi_posts_custom_column', array($this, 'custom_iomn_eventi_posts_column'), 10, 2);
-		// function add_scp_columns($columns) {
-		//   return array_merge($columns,
-		//   array('scp_category' => 'Categoria')
-		// );
-		// }
-		// add_filter('manage_sc_portfolio_posts_columns', 'add_scp_columns');
-		//
-		// function custom_sc_portfolio_column($column, $post_id) {
-		//   switch ($column) {
-		//     case 'scp_category':
-		//     $terms = get_the_term_list( $post_id, 'scp_category', '', ',', '');
-		//     if (is_string($terms)) {
-		//       echo $terms;
-		//     } else {
-		//       echo "--";
-		//     }
-		//     break;
-		//   }
-		//   return;
-		// }
-		// add_action('manage_sc_portfolio_posts_custom_column', 'custom_sc_portfolio_column', 10, 2);
+		add_action('admin_menu', array($this,'add_submenu'));
+
+		$this->options = new Iomn_Eventi_Admin_Options();
 	}
 
 	/**
@@ -83,6 +65,8 @@ class Iomn_Eventi_Admin
 	private function load_dependencies($plugin_name, $version)
 	{
 		require_once ( plugin_dir_path(__FILE__) . "/../includes/class-iomn-eventi-data.php" );
+		require_once ( plugin_dir_path(__FILE__) . "/../includes/class-iomn-eventi-admin-prenotazioni-list.php" );
+		require_once ( plugin_dir_path(__FILE__) . "/../includes/class-iomn-eventi-admin-options.php" );
 	}
 
 	/**
@@ -213,4 +197,25 @@ class Iomn_Eventi_Admin
 			break;
 		}
 	}
+
+	public function add_submenu() {
+		add_submenu_page(
+			'edit.php?post_type=iomn_eventi',
+			'Gestione Prenotazioni Eventi',
+			'Prenotazioni',
+			'edit_posts',
+			'prenotazioni',
+			array($this, 'render_prenotazioni')
+		);
+	}
+
+	public function render_prenotazioni() {
+		$list = new Iomn_Eventi_Admin_Prenotazioni_List();
+		echo '<div class="wrap"><h1>Prenotazioni</h1>';
+		// $this->prepare_items();
+		$list->display();
+		echo '</div>';
+		return true;
+	}
+
 }

@@ -10,6 +10,7 @@
 wp_nonce_field('_iomn_eventi_nonce', 'iomn_eventi_nonce');
 ?>
 
+Datesort: <?php echo get_post_meta($post->ID, 'iomn_eventi_data_sort', true); ?><br />
 <table>
   <caption>Date ed orari delle attività</caption>
   <?php

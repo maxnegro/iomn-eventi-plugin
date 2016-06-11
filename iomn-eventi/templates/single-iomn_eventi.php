@@ -18,6 +18,42 @@ add_action('wp_enqueue_scripts', 'iomn_eventi_single_ajax');
 
 $user = wp_get_current_user();
 
+/**
+* Modify post navigation
+*/
+add_filter('get_next_post_join', 'iomn_eventi_post_join');
+add_filter('get_previous_post_join', 'iomn_eventi_post_join');
+function iomn_eventi_post_join($join) {
+	$sql = sprintf("INNER JOIN wp_postmeta AS m ON p.ID = m.post_id ");
+	return $sql;
+}
+
+add_filter('get_previous_post_sort', 'iomn_eventi_post_sort_date_previous', 10, 1);
+add_filter('get_next_post_sort', 'iomn_eventi_post_sort_date_next', 10, 1);
+
+add_filter('get_previous_post_where', 'iomn_eventi_post_where_previous', 10);
+add_filter('get_next_post_where', 'iomn_eventi_post_where_next', 10);
+
+function iomn_eventi_post_sort_date_previous($orderby) {
+	return 'ORDER BY m.meta_value DESC, p.post_title DESC LIMIT 1';
+}
+
+function iomn_eventi_post_sort_date_next($orderby) {
+	return 'ORDER BY m.meta_value ASC, p.post_title ASC LIMIT 1';
+}
+
+function iomn_eventi_post_where_previous($where) {
+	global $wpdb; global $post;
+	$sql = $wpdb->prepare("WHERE p.post_type = 'iomn_eventi' AND (p.post_status = 'publish' OR p.post_status = 'private') AND m.meta_key = 'iomn_eventi_data_sort' AND m.meta_value < %d", get_post_meta($post->ID, 'iomn_eventi_data_sort'));
+	return $sql;
+}
+
+function iomn_eventi_post_where_next($where) {
+	global $wpdb; global $post;
+	$sql = $wpdb->prepare("WHERE p.post_type = 'iomn_eventi' AND (p.post_status = 'publish' OR p.post_status = 'private') AND m.meta_key = 'iomn_eventi_data_sort' AND m.meta_value > %d", get_post_meta($post->ID, 'iomn_eventi_data_sort'));
+	return $sql;
+}
+
 get_header(); ?>
 <div id="content" class="site-content"><!-- site main -->
 		<?php
