@@ -243,6 +243,10 @@ class Iomn_Eventi {
 		$this->loader->add_action( 'personal_options_update', $plugin_admin, 'save_user_specialty');
 		$this->loader->add_action( 'edit_user_profile_update', $plugin_admin, 'save_user_specialty');
 		$this->loader->add_action( 'user_register', $plugin_admin, 'save_user_specialty');
+
+		$this->loader->add_action( 'delete_user', $this, 'delete_user_cascade' );
+		$this->loader->add_action( 'delete_post', $this, 'delete_post_cascade' );
+
 	}
 
 	/**
@@ -299,6 +303,28 @@ class Iomn_Eventi {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	public function delete_post_cascade($post_id) {
+		global $wpdb;
+
+		$wpdb->delete(
+			$wpdb->prefix . "iomn_eventi_prenotazioni",
+			array( "id_evento" => $post_id),
+			array( "%d" )
+		);
+
+	}
+
+	public function delete_user_cascade($user_id) {
+		global $wpdb;
+
+		$wpdb->delete(
+			$wpdb->prefix . "iomn_eventi_prenotazioni",
+			array( "id_user" => $user_id),
+			array( "%d" )
+		);
+
 	}
 
 }
