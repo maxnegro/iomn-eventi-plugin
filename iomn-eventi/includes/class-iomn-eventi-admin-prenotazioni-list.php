@@ -58,9 +58,23 @@ class Iomn_Eventi_Admin_Prenotazioni_List extends WP_List_Table {
     switch( $column_name ) {
       case 'date':
       case 'evento':
-      case 'specialty':
       case 'resdate':
         return $item[ $column_name ];
+        break;
+      case 'specialty':
+        switch ($item['specialty']) {
+          case 'tnfp':
+            return 'TNFP';
+            break;
+
+            case 'medici':
+              return 'Medico';
+              break;
+
+          default:
+            return $item['specialty'];
+            break;
+        }
         break;
       case 'name':
         $actions = array(
