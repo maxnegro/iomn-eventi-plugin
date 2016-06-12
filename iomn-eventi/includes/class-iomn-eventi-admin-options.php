@@ -31,8 +31,16 @@ class Iomn_Eventi_Admin_Options {
   * Options page callback
   */
   public function create_admin_page() {
+    // update_option('iomn_eventi', array(
+    //   'notify' => array(
+    //     'BAZINGA@example.com',
+    //     'un.o@example.com',
+    //     'due@example.com'
+    //   )
+    //  ));
     // Set class property
-    $this->options = get_option( 'my_option_name' );
+    $this->options = get_option( 'iomn_eventi', array('BAZINGA') );
+    // var_dump($this->options);
     ?>
     <div class="wrap">
       <h2>Impostazioni IOMN Eventi</h2>
@@ -60,26 +68,19 @@ class Iomn_Eventi_Admin_Options {
 
     add_settings_section(
       'iomn_eventi_settings_section', // ID
-      'Impostazioni', // Title
+      'Notifica prenotazioni eventi', // Title
       array( $this, 'print_section_info' ), // Callback
       'iomn-eventi-settings-admin' // Page
     );
 
     add_settings_field(
-      'id_number', // ID
-      'ID Number', // Title
-      array( $this, 'id_number_callback' ), // Callback
+      'notify', // ID
+      'Indirizzi email', // Title
+      array( $this, 'notify_callback' ), // Callback
       'iomn-eventi-settings-admin', // Page
       'iomn_eventi_settings_section' // Section
     );
 
-    add_settings_field(
-      'title',
-      'Title',
-      array( $this, 'title_callback' ),
-      'iomn-eventi-settings-admin',
-      'iomn_eventi_settings_section'
-    );
   }
 
   /**
@@ -89,11 +90,17 @@ class Iomn_Eventi_Admin_Options {
   */
   public function sanitize( $input ){
     $new_input = array();
-    if( isset( $input['id_number'] ) )
-    $new_input['id_number'] = absint( $input['id_number'] );
 
-    if( isset( $input['title'] ) )
-    $new_input['title'] = sanitize_text_field( $input['title'] );
+    if ( isset($input['notify'])) {
+      if (is_array($input['notify'])) {
+        foreach ($input['notify'] as $value) {
+          $value = sanitize_email($value);
+          if (is_email($value)) {
+            $new_input['notify'][] = $value;
+          }
+        }
+      }
+    }
 
     return $new_input;
   }
@@ -102,28 +109,27 @@ class Iomn_Eventi_Admin_Options {
   * Print the Section text
   */
   public function print_section_info(){
-    print 'Compilare le opzioni di configurazione:';
+    print 'Specificare gli indirizzi email a cui inviare un messaggio ogni volta che viene effettuata o cancellata una prenotazione:';
   }
 
   /**
   * Get the settings option array and print one of its values
   */
-  public function id_number_callback(){
-    printf(
-    '<input type="text" id="id_number" name="my_option_name[id_number]" value="%s" />',
-    isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number']) : ''
-  );
-  }
-
-  /**
-  * Get the settings option array and print one of its values
-  */
-  public function title_callback(){
-    printf(
-      '<input type="text" id="title" name="my_option_name[title]" value="%s" />',
-      isset( $this->options['title'] ) ? esc_attr( $this->options['title']) : ''
+  public function notify_callback(){
+    if (isset($this->options['notify']) && is_array($this->options['notify'])) {
+      foreach ($this->options['notify'] as $value) {
+        printf('<div><input type="text" id="notify" name="iomn_eventi[notify][]" value="%s" /> <button onclick="jQuery(this).closest(\'div\').remove(); return false;"><i class="fa fa-minus-circle"></i></button></div>',
+          esc_attr( $value )
+        );
+      }
+    }
+    printf('<div><input type="text" id="notify" name="iomn_eventi[notify][]" value="%s" />',
+      ''
     );
-}
+    printf(' <button id="iomn_ev_add">Aggiungi <i class="fa fa-plus-circle"></i></button></div>');
+
+  }
+
 }
 
 // if( is_admin() )
