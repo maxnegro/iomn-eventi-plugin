@@ -116,14 +116,19 @@ class Iomn_Eventi_Admin_Options {
   * Get the settings option array and print one of its values
   */
   public function notify_callback(){
+    $idcount = 0;
     if (isset($this->options['notify']) && is_array($this->options['notify'])) {
       foreach ($this->options['notify'] as $value) {
-        printf('<div><input type="text" id="notify" name="iomn_eventi[notify][]" value="%s" /> <button onclick="jQuery(this).closest(\'div\').remove(); return false;"><i class="fa fa-minus-circle"></i></button></div>',
-          esc_attr( $value )
+        printf('<div><input type="text" id="notify%d" name="iomn_eventi[notify][]" value="%s" /> <button id="remove%d" type="button" onclick="jQuery(this).closest(\'div\').remove(); return false;"><i class="fa fa-minus-circle"></i></button></div>',
+          $idcount,
+          esc_attr( $value ),
+          $idcount
         );
+        $idcount = $idcount++;
       }
     }
-    printf('<div><input type="text" id="notify" name="iomn_eventi[notify][]" value="%s" />',
+    printf('<div><input type="text" id="notify%d" name="iomn_eventi[notify][]" value="%s" />',
+      $idcount,
       ''
     );
     printf(' <button id="iomn_ev_add">Aggiungi <i class="fa fa-plus-circle"></i></button></div>');
