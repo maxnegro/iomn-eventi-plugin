@@ -60,6 +60,15 @@ class Iomn_Eventi_Admin_Options {
       function submitForm() {
         jQuery('#submit').trigger("click");
       }
+      jQuery(document).ready(function () {
+        jQuery('.buttondesc').hide();
+        jQuery('button').mouseenter(function () {
+          jQuery('.buttondesc', this).show();
+        });
+        jQuery('button').mouseleave(function () {
+          jQuery('.buttondesc', this).hide();
+        });
+      });
       </script>
     </div>
     <?php
@@ -128,7 +137,7 @@ class Iomn_Eventi_Admin_Options {
     $idcount = 0;
     if (isset($this->options['notify']) && is_array($this->options['notify'])) {
       foreach ($this->options['notify'] as $value) {
-        printf('<div><input type="text" id="notify%d" name="iomn_eventi[notify][]" value="%s" /> <button id="remove%d" type="button" onclick="removeLine(this);"><i class="fa fa-minus-circle"></i></button></div>',
+        printf('<div><input type="text" id="notify%d" name="iomn_eventi[notify][]" value="%s" /> <button id="remove%d" type="button" onclick="removeLine(this);"><span class="buttondesc">Rimuovi indirizzo </span><i class="fa fa-minus-circle"></i></button></div>',
           $idcount,
           esc_attr( $value ),
           $idcount
@@ -140,7 +149,7 @@ class Iomn_Eventi_Admin_Options {
       $idcount,
       ''
     );
-    printf(' <button id="iomn_ev_add">Aggiungi <i class="fa fa-plus-circle"></i></button></div>');
+    printf(' <button id="iomn_ev_add"><span class="buttondesc">Aggiungi indirizzo </span><i class="fa fa-plus-circle"></i></button></div>');
 
   }
 
