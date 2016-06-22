@@ -287,19 +287,42 @@ class Iomn_Eventi_Public {
 	    $error = 1;
 	  }
 
-		$evdata->subscribe($user->ID, $type); // TODO check return value
-
 	  if($error == 0)
 	  {
-	    $headers = 'From:'.$admin_email. "\r\n";
+			$evdata->subscribe($user->ID, $type); // TODO check return value
+			$headers = 'From:'.$admin_email. "\r\n";
+
 	    if(wp_mail($user->get('user_email'), $subject, $contents, $headers)) {
 	      $results = "Grazie per la prenotazione. Arriverà una mail all'indirizzo indicato con la conferma dell'avvenuta prenotazione. Non sono necessarie altre azioni da parte tua.";
 	    } else {
 	      $results = "Non è stato possibile inviare la mail di prenotazione.";
 	      $error = 1;
 	    }
+			$adminNotifyText  = "";
+			$adminNotifyText .= sprintf("È stata effettuata una nuova prenotazione per l'evento \"%s\" da parte dell'utente %s %s.\n", $post->post_title, $user->first_name, $user->last_name);
+			$adminNotifyText .= "\n";
+			$adminNotifyText .= "L'evento è in programma per i seguenti giorni ed orari:\n";
+			$adminNotifyText .= "\n";
+			for ($i=0; $i<$evdata->sessions(); $i++) {
+				$adminNotifyText = $evdata->get_session($i);
+				$adminNotifyText .= sprintf("  %s dalle %s alle %s\n", date('d/m/Y', $session['date']), $session['from'], $session['to']);
+			}
+			$adminNotifyText .= "\n";
+			if ($error == 0) {
+				$adminNotifyText .= "All'utente è stata inviata una mail di notifica.\n\n";
+			} else {
+				$adminNotifyText .= "Non è stato possibile inviare una mail di notifica all'utente.\n\n";
+			}
+			$adminNotifyText .= "Ulteriori dettagli sono disponibili nella console di amministrazione del sito.\n";
+			$adminNotifyText .= "-- \n";
+			$adminNotifyText .= "Il sistema di prenotazione online\n";
+			$adminAddresses = get_option("notify");
+			if (is_array($adminAddresses)) {
+				wp_mail($adminAddresses, $subject, $adminNotifyText, $headers);
+			}
 	  }
-	  // Return the String
+
+		// Return the result message as a JSON array
 	  header( "Content-Type: application/json" );
 	  die(json_encode(array( 'isValid' => $error == 0, 'message' => $results)));
 	}
